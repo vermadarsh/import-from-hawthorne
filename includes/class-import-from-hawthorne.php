@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -30,30 +29,29 @@
 class Import_From_Hawthorne {
 
 	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
+	 * The loader that's responsible for maintaining and registering all hooks that power the plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      Import_From_Hawthorne_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @since 1.0.0
+	 * @access protected
+	 * @var Import_From_Hawthorne_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @since 1.0.0
+	 * @access protected
+	 * @var string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
 	/**
 	 * The current version of the plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @since 1.0.0
+	 * @access protected
+	 * @var string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -61,24 +59,18 @@ class Import_From_Hawthorne {
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
+	 * Load the dependencies, define the locale, and set the hooks for the admin area and the public-facing side of the site.
 	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'IMPORT_FROM_HAWTHORNE_VERSION' ) ) {
-			$this->version = IMPORT_FROM_HAWTHORNE_VERSION;
-		} else {
-			$this->version = '1.0.0';
-		}
+		$this->version     = ( defined( 'HAWTHORNE_PLUGIN_VERSION' ) ) ? HAWTHORNE_PLUGIN_VERSION : '1.0.0';
 		$this->plugin_name = 'import-from-hawthorne';
 
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -99,28 +91,20 @@ class Import_From_Hawthorne {
 	 */
 	private function load_dependencies() {
 
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-import-from-hawthorne-loader.php';
+		// The class responsible for orchestrating the actions and filters of the core plugin.
+		require_once 'class-import-from-hawthorne-loader.php';
 
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-import-from-hawthorne-i18n.php';
+		// The class responsible for defining internationalization functionality of the plugin.
+		require_once 'class-import-from-hawthorne-i18n.php';
 
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-import-from-hawthorne-admin.php';
+		// The file is responsible for defining all custom functions.
+		require_once HAWTHORNE_PLUGIN_PATH . 'includes/import-from-hawthorne-functions.php';
 
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-import-from-hawthorne-public.php';
+		// The class responsible for defining all actions that occur in the admin area.
+		require_once HAWTHORNE_PLUGIN_PATH . 'admin/class-import-from-hawthorne-admin.php';
+
+		// The class responsible for defining all actions that occur in the public-facing side of the site.
+		require_once HAWTHORNE_PLUGIN_PATH . 'public/class-import-from-hawthorne-public.php';
 
 		$this->loader = new Import_From_Hawthorne_Loader();
 
@@ -151,12 +135,11 @@ class Import_From_Hawthorne {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-
 		$plugin_admin = new Import_From_Hawthorne_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'hawthorne_admin_enqueue_scripts_callback' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'hawthorne_admin_menu_callback' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'hawthorne_plugin_settings_templates_callback' );
 	}
 
 	/**
@@ -167,12 +150,9 @@ class Import_From_Hawthorne {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
 		$plugin_public = new Import_From_Hawthorne_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'hawthorne_wp_enqueue_scripts_callback' );
 	}
 
 	/**

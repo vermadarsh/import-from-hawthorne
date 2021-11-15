@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -15,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       Import from Hawthorne
  * Plugin URI:        https://github.com/vermadarsh/import-from-hawthorne/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       This plugin helps migrating e-commerce content from Hawthorne.
  * Version:           1.0.0
  * Author:            Adarsh Verma
  * Author URI:        https://github.com/vermadarsh/
@@ -35,14 +34,24 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'IMPORT_FROM_HAWTHORNE_VERSION', '1.0.0' );
+define( 'HAWTHORNE_PLUGIN_VERSION', '1.0.0' );
+
+// Plugin path.
+if ( ! defined( 'HAWTHORNE_PLUGIN_PATH' ) ) {
+	define( 'HAWTHORNE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+}
+
+// Plugin URL.
+if ( ! defined( 'HAWTHORNE_PLUGIN_URL' ) ) {
+	define( 'HAWTHORNE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-import-from-hawthorne-activator.php
  */
 function activate_import_from_hawthorne() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-import-from-hawthorne-activator.php';
+	require_once HAWTHORNE_PLUGIN_PATH . 'includes/class-import-from-hawthorne-activator.php';
 	Import_From_Hawthorne_Activator::activate();
 }
 
@@ -51,18 +60,12 @@ function activate_import_from_hawthorne() {
  * This action is documented in includes/class-import-from-hawthorne-deactivator.php
  */
 function deactivate_import_from_hawthorne() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-import-from-hawthorne-deactivator.php';
+	require_once HAWTHORNE_PLUGIN_PATH . 'includes/class-import-from-hawthorne-deactivator.php';
 	Import_From_Hawthorne_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_import_from_hawthorne' );
 register_deactivation_hook( __FILE__, 'deactivate_import_from_hawthorne' );
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-import-from-hawthorne.php';
 
 /**
  * Begins execution of the plugin.
@@ -74,9 +77,65 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-import-from-hawthorne.php'
  * @since    1.0.0
  */
 function run_import_from_hawthorne() {
-
+	// The core plugin class that is used to define internationalization, admin-specific hooks, and public-facing site hooks.
+	require HAWTHORNE_PLUGIN_PATH . 'includes/class-import-from-hawthorne.php';
 	$plugin = new Import_From_Hawthorne();
 	$plugin->run();
-
 }
-run_import_from_hawthorne();
+
+/**
+ * This initiates the plugin.
+ * Checks for the required plugins to be installed and active.
+ *
+ * @since 1.0.0
+ */
+function hawthorne_plugins_loaded_callback() {
+	$active_plugins = get_option( 'active_plugins' );
+	$is_wc_active   = in_array( 'woocommerce/woocommerce.php', $active_plugins, true );
+
+	if ( current_user_can( 'activate_plugins' ) && false === $is_wc_active ) {
+		add_action( 'admin_notices', 'hawthorne_admin_notices_callback' );
+	} else {
+		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'hawthorne_plugin_actions_callback' );
+		run_import_from_hawthorne();
+	}
+}
+
+add_action( 'plugins_loaded', 'hawthorne_plugins_loaded_callback' );
+
+/**
+ * Show admin notice for the required plugins not active or installed.
+ *
+ * @since 1.0.0
+ */
+function hawthorne_admin_notices_callback() {
+	$this_plugin_data = get_plugin_data( __FILE__ );
+	$this_plugin      = $this_plugin_data['Name'];
+	$wc_plugin        = 'WooCommerce';
+	?>
+	<div class="error">
+		<p>
+			<?php
+			/* translators: 1: %s: strong tag open, 2: %s: strong tag close, 3: %s: this plugin, 4: %s: woocommerce plugin, 5: anchor tag for woocommerce plugin, 6: anchor tag close */
+			echo wp_kses_post( sprintf( __( '%1$s%3$s%2$s is ineffective as it requires %1$s%4$s%2$s to be installed and active. Click %5$shere%6$s to install or activate it.', 'import-from-hawthorne' ), '<strong>', '</strong>', esc_html( $this_plugin ), esc_html( $wc_plugin ), '<a target="_blank" href="' . admin_url( 'plugin-install.php?s=woocommerce&tab=search&type=term' ) . '">', '</a>' ) );
+			?>
+		</p>
+	</div>
+	<?php
+}
+
+/**
+ * This function adds custom plugin actions.
+ *
+ * @param array $links Links array.
+ * @return array
+ * @since 1.0.0
+ */
+function hawthorne_plugin_actions_callback( $links ) {
+	$this_plugin_links = array(
+		'<a title="' . __( 'Settings', 'import-from-hawthorne' ) . '" href="' . esc_url( admin_url( 'admin.php?page=import-from-hawthorne' ) ) . '">' . __( 'Settings', 'import-from-hawthorne' ) . '</a>',
+		'<a title="' . __( 'Docs', 'import-from-hawthorne' ) . '" href="javascript:void(0);">' . __( 'Docs', 'import-from-hawthorne' ) . '</a>',
+	);
+
+	return array_merge( $this_plugin_links, $links );
+}

@@ -78,7 +78,7 @@ class Import_From_Hawthorne_Admin {
 		// Custom admin script.
 		wp_enqueue_script(
 			$this->plugin_name,
-			HAWTHORNE_PLUGIN_URL . 'js/import-from-hawthorne-admin.js',
+			HAWTHORNE_PLUGIN_URL . 'admin/js/import-from-hawthorne-admin.js',
 			array( 'jquery' ),
 			filemtime( HAWTHORNE_PLUGIN_PATH . 'admin/js/import-from-hawthorne-admin.js' ),
 			true
@@ -89,7 +89,9 @@ class Import_From_Hawthorne_Admin {
 			$this->plugin_name,
 			'Hawthorne_Admin_Script_Vars',
 			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'ajaxurl'                               => admin_url( 'admin-ajax.php' ),
+				'import_from_hawthorne_button_text'     => __( 'Import From Hawthorne', 'import-from-hawthorne' ),
+				'is_administrator'                      => ( current_user_can( 'manage_options' ) ) ? 'yes' : 'no',
 			)
 		);
 	}

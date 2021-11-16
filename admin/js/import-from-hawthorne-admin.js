@@ -1,32 +1,16 @@
 (function( $ ) {
 	'use strict';
 
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+	// Localized variables.
+	var ajaxurl                           = Hawthorne_Admin_Script_Vars.ajaxurl;
+	var import_from_hawthorne_button_text = Hawthorne_Admin_Script_Vars.import_from_hawthorne_button_text;
+	var is_administrator                  = Hawthorne_Admin_Script_Vars.is_administrator;
+	
+
+	// Add the export button besides the new log button.
+	// Enable the exporting feature only for admin users.
+	if ( 'yes' === is_administrator ) {
+		$( '<a href="javascript:void(0);" class="hawthorne_import_button page-title-action">' + import_from_hawthorne_button_text + '</a>' ).insertAfter( 'body.post-type-product .wrap a.page-title-action' );
+	}
 
 })( jQuery );

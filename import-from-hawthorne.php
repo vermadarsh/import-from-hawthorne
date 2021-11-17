@@ -46,6 +46,18 @@ if ( ! defined( 'HAWTHORNE_PLUGIN_URL' ) ) {
 	define( 'HAWTHORNE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
+// Log file path.
+if ( ! defined( 'HAWTHORNE_LOG_DIR_PATH' ) ) {
+	$uploads_dir = wp_upload_dir();
+	define( 'HAWTHORNE_LOG_DIR_PATH', $uploads_dir['basedir'] . '/hawthorne-import-log/' );
+}
+
+// Log file url.
+if ( ! defined( 'HAWTHORNE_LOG_DIR_URL' ) ) {
+	$uploads_dir = wp_upload_dir();
+	define( 'HAWTHORNE_LOG_DIR_URL', $uploads_dir['baseurl'] . '/hawthorne-import-log/' );
+}
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-import-from-hawthorne-activator.php

@@ -140,7 +140,7 @@ class Import_From_Hawthorne {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'hawthorne_admin_enqueue_scripts_callback' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'hawthorne_admin_menu_callback' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'hawthorne_plugin_settings_templates_callback' );
-		$this->loader->add_action( 'wp_ajax_hawthorne_product_import_api', $plugin_admin, 'hawthorne_product_import_api_callback' );
+		$this->loader->add_action( 'wp_ajax_import_products', $plugin_admin, 'hawthorne_import_products_callback' );
 	}
 
 	/**

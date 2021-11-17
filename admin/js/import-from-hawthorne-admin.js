@@ -1,32 +1,29 @@
-(function( $ ) {
+/**
+ * Admin script file.
+ */
+jQuery( document ).ready( function( $ ) {
 	'use strict';
 
 	// Localized variables.
-	var ajaxurl                           = Hawthorne_Admin_Script_Vars.ajaxurl;
-	var import_from_hawthorne_button_text = Hawthorne_Admin_Script_Vars.import_from_hawthorne_button_text;
-	var is_administrator                  = Hawthorne_Admin_Script_Vars.is_administrator;
-	
+	var ajaxurl                    = Hawthorne_Admin_Script_Vars.ajaxurl;
+	var product_import_button_text = Hawthorne_Admin_Script_Vars.product_import_button_text;
 
-	// Add the export button besides the new log button.
-	// Enable the exporting feature only for admin users.
-	if ( 'yes' === is_administrator ) {
-		$( '<a href="javascript:void(0);" class="hawthorne_import_button page-title-action">' + import_from_hawthorne_button_text + '</a>' ).insertAfter( 'body.post-type-product .wrap a.page-title-action' );
-	}
-	/*
-	 Ajax to serve Import data from hawthorne API call.
+	// Add the import button besides the main title.
+	$( '<a href="javascript:void(0);" class="hawthorne_products_import page-title-action">' + product_import_button_text + '</a>' ).insertAfter( 'body.post-type-product .wrap a.page-title-action:last' );
+
+	/**
+	 * AJAX to import products from Hawthorne.
 	 */
-	$( document ).on( 'click', '.hawthorne_import_button', function( evt ) {
-		evt.preventDefault();
+	$( document ).on( 'click', '.hawthorne_products_import', function() {
 		var this_btn = $( this );
-		var data = {
-			action: 'hawthorne_product_import_api',
-		}
-		// block_element( $('body.post-type-product .wrap') );
+		// block_element( this_btn );
 		$.ajax( {
-			dataType: 'json',
+			dataType: 'JSON',
 			url: ajaxurl,
 			type: 'POST',
-			data: data,
+			data: {
+				action: 'import_products',
+			},
 			cache: true,
 			success: function ( response ) {
 				// unblock_element( $('body.post-type-product .wrap') );
@@ -54,4 +51,4 @@
 	function unblock_element( element ) {
 		element.removeClass( 'non-clickable' );
 	}
-})( jQuery );
+} );

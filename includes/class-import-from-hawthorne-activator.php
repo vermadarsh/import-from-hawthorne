@@ -30,7 +30,13 @@ class Import_From_Hawthorne_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
+		// Create a log directory within the WordPress uploads directory.
+		$uploads     = wp_upload_dir();
+		$uploads_dir = $uploads['basedir'];
+		$uploads_dir = "{$uploads_dir}/hawthorne-import-log/";
 
+		if ( ! file_exists( $uploads_dir ) ) {
+			mkdir( $uploads_dir, 0755, true );
+		}
 	}
-
 }

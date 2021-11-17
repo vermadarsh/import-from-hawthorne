@@ -12,15 +12,17 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 // Check if the submit button is clicked.
 $update_plugin_settings = filter_input( INPUT_POST, 'hawthorne_update_plugin_settings', FILTER_SANITIZE_STRING );
 if ( ! is_null( $update_plugin_settings ) ) {
-	$api_key        = filter_input( INPUT_POST, 'api-key', FILTER_SANITIZE_STRING );
-	$api_secret_key = filter_input( INPUT_POST, 'api-secret-key', FILTER_SANITIZE_STRING );
+	$api_key           = filter_input( INPUT_POST, 'api-key', FILTER_SANITIZE_STRING );
+	$api_secret_key    = filter_input( INPUT_POST, 'api-secret-key', FILTER_SANITIZE_STRING );
+	$products_endpoint = filter_input( INPUT_POST, 'products-endpoint', FILTER_SANITIZE_STRING );
 
 	// Array for the settings.
 	update_option(
 		'hawthorne_integration_plugin_settings',
 		array(
-			'api_key'        => $api_key,
-			'api_secret_key' => $api_secret_key,
+			'api_key'           => $api_key,
+			'api_secret_key'    => $api_secret_key,
+			'products_endpoint' => $products_endpoint,
 		),
 		false
 	);
@@ -32,8 +34,9 @@ if ( ! is_null( $update_plugin_settings ) ) {
 }
 
 // Get the plugin settings.
-$api_key        = hawthorne_get_plugin_settings( 'api_key' );
-$api_secret_key = hawthorne_get_plugin_settings( 'api_secret_key' );
+$api_key           = hawthorne_get_plugin_settings( 'api_key' );
+$api_secret_key    = hawthorne_get_plugin_settings( 'api_secret_key' );
+$products_endpoint = hawthorne_get_plugin_settings( 'products_endpoint' );
 ?>
 <table class="form-table hack-import-subscribers-table">
 	<tbody>
@@ -52,6 +55,15 @@ $api_secret_key = hawthorne_get_plugin_settings( 'api_secret_key' );
 			<td>
 				<input type="password" required id="api-secret-key" name="api-secret-key" placeholder="****************" class="regular-text" value="<?php echo esc_html( $api_secret_key ); ?>">
 				<p class="description"><?php esc_html_e( 'Hawthorne secret API key.', 'import-from-hawthorne' ); ?></p>
+			</td>
+		</tr>
+
+		<!-- PRODUCTS ENDPOINT -->
+		<tr>
+			<th scope="row"><label for="products-endpoint"><?php esc_html_e( 'Products Endpoint', 'import-from-hawthorne' ); ?></label></th>
+			<td>
+				<input type="url" required id="products-endpoint" name="products-endpoint" placeholder="https://example.com" class="regular-text" value="<?php echo esc_url( $products_endpoint ); ?>">
+				<p class="description"><?php esc_html_e( 'Hawthorne products import endpoint.', 'import-from-hawthorne' ); ?></p>
 			</td>
 		</tr>
 	</tbody>

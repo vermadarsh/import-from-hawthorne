@@ -222,14 +222,12 @@ class Import_From_Hawthorne_Admin {
 			'timeout'      => 600,
 		);
 
-			
 		$api_response      = wp_remote_get( $api_base_url, $api_args ); // Shoot the API.
 		$api_response_code = wp_remote_retrieve_response_code( $api_response ); // Get the response code.
 		if ( 200 === $api_response_code ) {
 			$api_response_message .= 'hawthorne_product_import_api_call_success';
 			$api_response_body     = wp_remote_retrieve_body( $api_response ); // Get the response body.
-			debug( $api_response_body );
-			die("opopopop");
+			
 
 		} else {
 			$api_response_body     = wp_remote_retrieve_body( $api_response ); // Get the response body.

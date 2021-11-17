@@ -27,6 +27,7 @@
 			url: ajaxurl,
 			type: 'POST',
 			data: data,
+			cache: true,
 			success: function ( response ) {
 				// unblock_element( $('body.post-type-product .wrap') );
 				if( '' === response.data.code ) {

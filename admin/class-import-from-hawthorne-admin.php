@@ -190,4 +190,59 @@ class Import_From_Hawthorne_Admin {
 	public function hawthorne_plugin_api_connection_settings_callback() {
 		include_once 'templates/settings/api-connection.php'; // Include the API connection settings template.
 	}
+	/**
+	* Function to return Ajax call for import product from Hawthorne API.
+	*/
+	public function hawthorne_product_import_api_callback() {
+		$action                = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING );
+		$$api_response_message = '';
+		// Exit, if the action mismatches.
+		if ( empty( $action ) || 'hawthorne_product_import_api' !== $action ) {
+			echo 0;
+			wp_die();
+		}
+		$api_base_url   = 'https://services.hawthornegc.com/v1/part/';
+		// Testing the API connection now.
+		$api_key        = hawthorne_get_plugin_settings( 'api_key' );
+		$api_secret_key = hawthorne_get_plugin_settings( 'api_secret_key' );
+		$current_time   = gmdate( 'Y-m-d\TH:i:s\Z' );
+		$api_args       = array(
+			'headers'      => array_merge(
+				array(
+					'Content-Type' => 'application/json',
+				)
+			),
+			'body'         => array(
+				'format'    => 'json',
+				'X-ApiKey'  => $api_key,
+				'time'      => $current_time,
+				'signature' => hawthorne_get_authentication_signature( $api_key, $api_secret_key, $api_base_url, $current_time ),
+			),
+			'sslverify'    => false,
+			'timeout'      => 600,
+		);
+
+			
+		$api_response      = wp_remote_get( $api_base_url, $api_args ); // Shoot the API.
+		$api_response_code = wp_remote_retrieve_response_code( $api_response ); // Get the response code.
+		if ( 200 === $api_response_code ) {
+			$api_response_message .= 'hawthorne_product_import_api_call_success';
+			$api_response_body     = wp_remote_retrieve_body( $api_response ); // Get the response body.
+			debug( $api_response_body );
+			die("opopopop");
+
+		} else {
+			$api_response_body     = wp_remote_retrieve_body( $api_response ); // Get the response body.
+			$api_response_body     = json_decode( $api_response_body, true );
+			$api_response_message .= ( ! empty( $api_response_body['Message'] ) ) ? $api_response_body['Message'] : '';
+			$api_response_message .= ( empty( $api_response_body['Message'] ) ) ? ( ( ! empty( $api_response['response']['message'] ) ) ? $api_response['response']['message'] : '' ) : $api_response_message;
+		}
+		
+		$response = array(
+			'code' => $api_response_message,
+			'html' => ersrv_get_amenity_html( array() ),
+		);
+		wp_send_json_success( $response );
+		wp_die();
+	}
 }

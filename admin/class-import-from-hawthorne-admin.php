@@ -294,23 +294,20 @@ class Import_From_Hawthorne_Admin {
 	}
 
 	/**
-	 * Highlight a menu in the admin menubar for the import products page.
+	 * Highlight a parent menu in the admin menubar for the import products page.
 	 *
-	 * @param string $submenu_file Submenu file.
+	 * @param string $parent_file Parent file.
 	 * @return string
 	 * @since 1.0.0
 	 */
-	public function hawthorne_submenu_file_callback( $submenu_file ) {
-		$screen = get_current_screen(); // Get the current screen.
+	public function hawthorne_parent_file_callback( $parent_file ) {
+		global $plugin_page; // Get the current page ID.
 
-		// If the current screen is of the import products.
-		if (  ! empty( $screen->id ) && 'admin_page_import-products-from-hawthorne' === $screen->id ) {
-			$submenu_file = 'woocommerce_page_wc-admin'; // Make "WooCommerce" menu as the parent menu.
-			// $submenu_file = 'edit-product'; // Make "Products" menu as the parent menu.
-
-			$submenu_file = 'import-from-hawthorne';
+		// If the current page matches the import products.
+		if (  ! empty( $plugin_page ) && 'import-products-from-hawthorne' === $plugin_page ) {
+			$plugin_page = 'wc-admin'; // Make "WooCommerce" menu as the parent menu.
 		}
 
-		return $submenu_file;
+		return $parent_file;
 	}
 }

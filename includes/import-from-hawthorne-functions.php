@@ -218,7 +218,7 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 	 * @return int
 	 */
 	function hawthorne_update_product( $existing_product_id, $part ) {
-		// debug( $part );
-		// die("pool");
+		debug( $part );
+		die("pool");
 	}
 }

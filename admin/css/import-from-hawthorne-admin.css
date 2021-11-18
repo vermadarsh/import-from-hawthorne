@@ -32,5 +32,5 @@
 }
 .wrap .page-title-action.import-sub-dropdown-btn > .dashicons{
 	vertical-align: middle;
-	transform: translateY(-2px);
+	/* transform: translateY(-2px); */
 }

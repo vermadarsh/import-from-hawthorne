@@ -91,6 +91,7 @@ class Import_From_Hawthorne_Admin {
 			array(
 				'ajaxurl'                    => admin_url( 'admin-ajax.php' ),
 				'product_import_button_text' => __( 'Import From Hawthorne', 'import-from-hawthorne' ),
+				'product_import_admin_url'   => admin_url( 'admin.php?page=import-products-from-hawthorne' ),
 			)
 		);
 	}
@@ -109,6 +110,19 @@ class Import_From_Hawthorne_Admin {
 			'manage_options',
 			'import-from-hawthorne',
 			array( $this, 'hawthorne_admin_settings_callback' )
+		);
+
+		/**
+		 * Add submenu to the WooCommerce menu.
+		 * This is for showing the template for the products import.
+		 */
+		add_submenu_page(
+			null,
+			__( 'Import Products', 'import-from-hawthorne' ),
+			__( 'Import Products from Hawthorne', 'import-from-hawthorne' ),
+			'manage_options',
+			'import-products-from-hawthorne',
+			array( $this, 'hawthorne_import_products_from_hawthorne_callback' )
 		);
 	}
 
@@ -189,6 +203,11 @@ class Import_From_Hawthorne_Admin {
 	public function hawthorne_plugin_api_connection_settings_callback() {
 		include_once 'templates/settings/api-connection.php'; // Include the API connection settings template.
 	}
+
+	public function hawthorne_import_products_from_hawthorne_callback() {
+		include 'templates/pages/import-products.php'; // Include the template for importing products - progressbar.
+	}
+
 	/**
 	 * AJAX to import products from Hawthorne.
 	 *

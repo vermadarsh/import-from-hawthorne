@@ -121,19 +121,12 @@ if ( ! function_exists( 'hawthorne_fetch_products' ) ) {
 
 		$api_response      = wp_remote_get( $products_endpoint, $api_args ); // Shoot the API.
 
-		debug( $api_response ); die;
-
 		$api_response_code = wp_remote_retrieve_response_code( $api_response ); // Get the response code.
 		if ( 200 === $api_response_code ) {
-			$api_response_message .= 'hawthorne_product_import_api_call_success';
-			$api_response_body     = wp_remote_retrieve_body( $api_response ); // Get the response body.
-			
+			$api_response_body = wp_remote_retrieve_body( $api_response ); // Get the response body.
+			$api_response_body = ( ! empty( $api_response_body ) ) ? json_decode( $api_response_body ) : array();
 
-		} else {
-			$api_response_body     = wp_remote_retrieve_body( $api_response ); // Get the response body.
-			$api_response_body     = json_decode( $api_response_body, true );
-			$api_response_message .= ( ! empty( $api_response_body['Message'] ) ) ? $api_response_body['Message'] : '';
-			$api_response_message .= ( empty( $api_response_body['Message'] ) ) ? ( ( ! empty( $api_response['response']['message'] ) ) ? $api_response['response']['message'] : '' ) : $api_response_message;
+			debug( $api_response_body ); die;
 		}
 	}
 }
@@ -158,12 +151,12 @@ if ( ! function_exists( 'hawthorne_write_import_log' ) ) {
 		require_once ABSPATH . '/wp-admin/includes/file.php';
 		WP_Filesystem();
 
-		$local_file = HAWTHORNE_LOG_DIR_PATH . 'import-log.log';
+		$local_file = HAWTHORNE_LOG_DIR_PATH . 'import-log.log'; // Log file path.
 
 		// Fetch the old content.
 		if ( $wp_filesystem->exists( $local_file ) ) {
 			$content  = $wp_filesystem->get_contents( $local_file );
-			$content .= "\n" . rothco_get_current_datetime( 'Y-m-d H:i:s' ) . ' :: ' . $message;
+			$content .= "\n" . hawthorne_get_current_datetime( 'Y-m-d H:i:s' ) . ' :: ' . $message;
 		}
 
 		$wp_filesystem->put_contents(
@@ -171,5 +164,22 @@ if ( ! function_exists( 'hawthorne_write_import_log' ) ) {
 			$content,
 			FS_CHMOD_FILE // predefined mode settings for WP files.
 		);
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_get_current_datetime' ) ) {
+	/**
+	 * Return the current date according to local time.
+	 *
+	 * @param string $format Holds the format string.
+	 * @return string
+	 */
+	function hawthorne_get_current_datetime( $format = 'Y-m-d' ) {
+		$timezone_format = _x( $format, 'timezone date format' );
+
+		return date_i18n( $timezone_format );
 	}
 }

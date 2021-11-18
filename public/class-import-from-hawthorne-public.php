@@ -74,4 +74,10 @@ class Import_From_Hawthorne_Public {
 			)
 		);
 	}
+
+	public function hawthorne_wp_callback() {
+		// $products = hawthorne_fetch_products();
+		// debug( $products );
+		// die;
+	}
 }

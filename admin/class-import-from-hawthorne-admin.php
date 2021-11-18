@@ -204,7 +204,113 @@ class Import_From_Hawthorne_Admin {
 		include_once 'templates/settings/api-connection.php'; // Include the API connection settings template.
 	}
 
+	/**
+	 * Products import with progressbar template.
+	 *
+	 * @param 1.0.0
+	 */
 	public function hawthorne_import_products_from_hawthorne_callback() {
 		include 'templates/pages/import-products.php'; // Include the template for importing products - progressbar.
+	}
+
+	/**
+	 * AJAX to kickoff the products import.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_kickoff_products_import_callback() {
+		$action = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING );
+
+		// Exit, if the action mismatches.
+		if ( empty( $action ) || 'kickoff_products_import' !== $action ) {
+			echo 0;
+			wp_die();
+		}
+
+		// Posted data.
+		$page                   = (int) filter_input( INPUT_POST, 'page', FILTER_SANITIZE_NUMBER_INT );
+		$new_products_added     = (int) filter_input( INPUT_POST, 'new_products_added', FILTER_SANITIZE_NUMBER_INT );
+		$old_products_updated   = (int) filter_input( INPUT_POST, 'old_products_updated', FILTER_SANITIZE_NUMBER_INT );
+		$products_import_failed = (int) filter_input( INPUT_POST, 'products_import_failed', FILTER_SANITIZE_NUMBER_INT );
+
+		// Fetch products.
+		$products       = get_transient( 'hawthorne_product_items' );
+		$products       = json_decode( $products, true ); // Decode the JSON.
+		$products_count = count( $products );
+		$products       = array_chunk( $products, 10, true ); // Divide the complete data into 10 products.
+		$chunk_index    = $page - 1;
+		$chunk          = ( array_key_exists( $chunk_index, $products ) ) ? $products[ $chunk_index ] : array();
+
+		// Return, if the chunk is empty, means all the products are imported.
+		if ( empty( $chunk ) || ! is_array( $chunk ) ) {
+			delete_transient( 'hawthorne_product_items' ); // Delete the transient now.
+
+			// Sent the final response.
+			$response = array(
+				'code'                   => 'products-imported',
+				'products_import_failed' => $products_import_failed, // Count of the products that failed to import.
+				'new_products_added'     => $new_products_added, // Count of the products that failed to import.
+				'old_products_updated'   => $old_products_updated, // Count of the products that failed to import.
+			);
+			wp_send_json_success( $response );
+			wp_die();
+		}
+
+		// Iterate through the loop to import the products.
+		foreach ( $chunk as $part ) {
+			$product_title = ( ! empty( $part['Name'] ) ) ? $part['Name'] : '';
+
+			// Skip the update if the product title is missing.
+			if ( empty( $product_title ) ) {
+				$products_import_failed++; // Increase the count of products import.
+				continue;
+			}
+
+			// Check if the product exists with the name.
+			$product_exists = get_page_by_title( $product_title, OBJECT, 'product' );
+
+			// If the product doesn't exist.
+			if ( is_null( $product_exists ) ) {
+				hawthorne_create_product( $part ); // Create product.
+				$new_products_added++; // Increase the counter of new product created.
+			} else {
+				hawthorne_update_product( $product_exists->ID, $part ); // Update product.
+				$old_products_updated++; // Increase the counter of old product updated.
+			}
+		}
+
+		// Send the AJAX response now.
+		$response = array(
+			'code'                   => 'products-import-in-progress',
+			'percent'                => ( ( $page * 10 ) / $products_count ) * 100, // Percent of the products imported.
+			'total'                  => $products_count, // Count of the total products.
+			'imported'               => ( $page * 10 ), // These are the count of products that are imported.
+			'products_import_failed' => $products_import_failed, // Count of the products that failed to import.
+			'new_products_added'     => $new_products_added, // Count of the products that failed to import.
+			'old_products_updated'   => $old_products_updated, // Count of the products that failed to import.
+		);
+		wp_send_json_success( $response );
+		wp_die();
+	}
+
+	/**
+	 * Highlight a menu in the admin menubar for the import products page.
+	 *
+	 * @param string $submenu_file Submenu file.
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function hawthorne_submenu_file_callback( $submenu_file ) {
+		$screen = get_current_screen(); // Get the current screen.
+
+		// If the current screen is of the import products.
+		if (  ! empty( $screen->id ) && 'admin_page_import-products-from-hawthorne' === $screen->id ) {
+			$submenu_file = 'woocommerce_page_wc-admin'; // Make "WooCommerce" menu as the parent menu.
+			// $submenu_file = 'edit-product'; // Make "Products" menu as the parent menu.
+
+			$submenu_file = 'import-from-hawthorne';
+		}
+
+		return $submenu_file;
 	}
 }

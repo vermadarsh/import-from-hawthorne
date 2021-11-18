@@ -94,10 +94,11 @@ if ( ! function_exists( 'hawthorne_fetch_products' ) ) {
 	/**
 	 * Get the products imported from Hawthorne.
 	 *
-	 * @return array
+	 * @param string $return_type Return data type.
+	 * @return array|string|boolean
 	 * @since 1.0.0
 	 */
-	function hawthorne_fetch_products() {
+	function hawthorne_fetch_products( $return_type = 'array' ) {
 		hawthorne_write_import_log( 'NOTICE: Starting to import products.' ); // Write the log.
 		$products_endpoint = hawthorne_get_plugin_settings( 'products_endpoint' );
 		$api_key           = hawthorne_get_plugin_settings( 'api_key' );
@@ -120,13 +121,20 @@ if ( ! function_exists( 'hawthorne_fetch_products' ) ) {
 		);
 
 		$api_response      = wp_remote_get( $products_endpoint, $api_args ); // Shoot the API.
-
 		$api_response_code = wp_remote_retrieve_response_code( $api_response ); // Get the response code.
+
+		// If everything is OK.
 		if ( 200 === $api_response_code ) {
 			$api_response_body = wp_remote_retrieve_body( $api_response ); // Get the response body.
-			$api_response_body = ( ! empty( $api_response_body ) ) ? json_decode( $api_response_body ) : array();
 
-			debug( $api_response_body ); die;
+			// If the return type is JSON.
+			if ( ! empty( $return_type ) && 'json' === $return_type ) {
+				return $api_response_body;
+			}
+
+			return ( ! empty( $api_response_body ) ) ? json_decode( $api_response_body ) : array();
+		} else {
+			return false;
 		}
 	}
 }
@@ -181,5 +189,36 @@ if ( ! function_exists( 'hawthorne_get_current_datetime' ) ) {
 		$timezone_format = _x( $format, 'timezone date format' );
 
 		return date_i18n( $timezone_format );
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_create_product' ) ) {
+	/**
+	 * Create new product and insert that into the database.
+	 *
+	 * @param array $part New product data.
+	 * @return int
+	 */
+	function hawthorne_create_product( $part ) {
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_update_product' ) ) {
+	/**
+	 * Update the old product into the database.
+	 *
+	 * @param int   $existing_product_id Existing product data.
+	 * @param array $part API product data.
+	 * @return int
+	 */
+	function hawthorne_update_product( $existing_product_id, $part ) {
+		// debug( $part );
+		// die("pool");
 	}
 }

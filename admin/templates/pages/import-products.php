@@ -9,38 +9,53 @@
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-// Shoot the API to get products.
-$products = hawthorne_fetch_products();
-debug( $products ); die;
+// Fetch the products data from the transient.
+$products = get_transient( 'hawthorne_product_items' );
+
+// See if there are products in the transient.
+if ( empty( $products ) ) {
+	$products = hawthorne_fetch_products(); // Shoot the API to get products.
+
+	/**
+	 * Store the response data in a cookie.
+	 * This cookie data will be used to import the products in the database.
+	 */
+	if ( false !== $products ) {
+		set_transient( 'hawthorne_product_items', wp_json_encode( $products ), ( 60*60*12 ) );
+	}
+}
+
+// Get the count of the products.
+$products       = json_decode( $products, true );
+$total_products = count( $products );
 ?>
-<section class="import-from-hawthorne-wrapper">
+<div class="wrap">
+	<h1><?php esc_html_e( 'Import Products', 'import-from-hawthorne' ); ?></h1>
+	<section class="import-from-hawthorne-wrapper">
+		<div class="card importing-card">
+			<h2 class="heading"><?php esc_html_e( 'Importing', 'import-from-hawthorne' ); ?></h2>
+			<p class="importing-notice"><?php echo sprintf( __( 'Your products are now being imported... %1$s0%3$s of %2$s%4$s%3$s imported', 'import-from-hawthorne' ), '<span class="imported-count">', '<span class="total-products-count">', '</span>', $total_products ); ?></p>
+			<div class="progress-bar-wrapper">
+				<progress class="importer-progress" max="100" value="0"></progress>
+				<span class="value">0%</span>
+			</div>
+		</div>
 
-    <div class="card importing-card">
-        <h2 class="heading">Importing</h2>
-        <p>Your products are now being imported...</p>
-
-        <div class="progress-bar-wrapper">
-            <progress class="importer-progress" max="100" value="0">
-            </progress>
-            <span class="value">0%</span>
-        </div>
-    </div>
-
-    <div class="card finish-card">
-        <h2 class="heading">Importing products from a CSV file</h2>
-        <p>This tool allows you to import (or merge) product data to your store from a CSV or TXT file.</p>
-
-        <div class="importer-done">
-            <span class="dashicons dashicons-yes-alt icon"></span>
-            <p>
-            Import complete! Failed to import <strong>26</strong> products.
-            <a href="#" class="importer-done-view-errors">View import log</a>.
-            File uploaded: <strong>wc-product-export-18-11-2021-1637230637423-1.csv</strong>
-            </p>
-        </div>
-        <div class="wc-actions text-right">
-            <a class="button button-primary" href="http://localhost/cmsminds/easy-reservations-system/wp-admin/edit.php?post_type=product">View products</a>
-        </div>
-    </div>
-
-</section>
+		<div class="card finish-card" style="display: none;">
+			<h2 class="heading"><?php esc_html_e( 'Import Complete!', 'import-from-hawthorne' ); ?></h2>
+			<div class="importer-done">
+				<span class="dashicons dashicons-yes-alt icon"></span>
+				<p>
+					<?php
+					/* translators: 1: %s: total products count, 2: %s: strong tag open, 3: %s: strong tag closed */
+					echo sprintf( __( '%1$s products imported. Newly added products: %2$s12%3$s Updated products: %2$s23%3$s', 'import-from-hawthorne' ), $total_products, '<strong>', '</strong>' );
+					?>
+				</p>
+			</div>
+			<div class="wc-actions text-right">
+				<a class="button button-primary" href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>"><?php esc_html_e( 'View products', 'import-from-hawthorne' ); ?></a>
+				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'View import log', 'import-from-hawthorne' ); ?></a>
+			</div>
+		</div>
+	</section>
+</div>

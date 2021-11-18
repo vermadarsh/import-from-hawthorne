@@ -218,7 +218,14 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 	 * @return int
 	 */
 	function hawthorne_update_product( $existing_product_id, $part ) {
-		debug( $part );
-		die("pool");
+		$sku     = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
+		$msrp    = ( ! empty( $part['EachMsrp'] ) ) ? $part['EachMsrp'] : '';
+		$content = ( ! empty( $part['Description'] ) ) ? $part['Description'] : '';
+
+		// die("before update");
+		// Update the data now.
+		// update_post_meta( $existing_product_id, '_sku', $sku );
+		// update_post_meta( $existing_product_id, '_regular_price', $msrp );
+		// update_post_meta( $existing_product_id, '_price', $msrp );
 	}
 }

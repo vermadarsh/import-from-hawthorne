@@ -27,13 +27,16 @@
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
 	border-left: 0px;
-	padding-left: 0px;
-	padding-right: 3px;
+	padding-left: 3px;
+	padding-right: 6px;
 }
 .wrap .page-title-action.import-sub-dropdown-btn > .dashicons{
 	vertical-align: middle;
-	transform: translateY(-2px);
+	transform: translateY(-2px) scale(2);
 	height: auto;
 	width: auto;
-	font-size: 16px;
+	font-size: 10px;
+}
+body.post-type-product .wrap a.page-title-action {
+    display: inline-block;
 }

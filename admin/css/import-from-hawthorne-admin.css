@@ -40,6 +40,9 @@
 body.post-type-product .wrap a.page-title-action {
     display: inline-block;
 }
+.wrap .page-title-action.import-sub-dropdown-btn:focus {
+    box-shadow: none !important;
+}
 /* progress bar css */
 .progress-bar-wrapper progress {
 	width: 100%;

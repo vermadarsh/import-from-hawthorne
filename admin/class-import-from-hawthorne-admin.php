@@ -207,31 +207,4 @@ class Import_From_Hawthorne_Admin {
 	public function hawthorne_import_products_from_hawthorne_callback() {
 		include 'templates/pages/import-products.php'; // Include the template for importing products - progressbar.
 	}
-
-	/**
-	 * AJAX to import products from Hawthorne.
-	 *
-	 * @since 1.0.0
-	 */
-	public function hawthorne_import_products_callback() {
-		$action = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING );
-
-		// Exit, if the action mismatches.
-		if ( empty( $action ) || 'import_products' !== $action ) {
-			echo 0;
-			wp_die();
-		}
-
-		// Fetch products.
-		$products = hawthorne_fetch_products();
-		debug( $products );
-		die;
-		
-		$response = array(
-			'code' => $api_response_message,
-			'html' => ersrv_get_amenity_html( array() ),
-		);
-		wp_send_json_success( $response );
-		wp_die();
-	}
 }

@@ -1,3 +1,18 @@
+<?php
+/**
+ * This file is used for templating the Hawthorne products import feature.
+ *
+ * @since 1.0.0
+ * @package Import_From_Hawthorne
+ * @subpackage Import_From_Hawthorne/admin/pages
+ */
+
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
+// Shoot the API to get products.
+$products = hawthorne_fetch_products();
+debug( $products ); die;
+?>
 <section class="import-from-hawthorne-wrapper">
 
     <div class="card importing-card">

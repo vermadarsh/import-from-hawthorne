@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="card finish-card woocommerce-progress-form-wrapper">
+    <div class="card finish-card">
         <h2 class="heading">Importing products from a CSV file</h2>
         <p>This tool allows you to import (or merge) product data to your store from a CSV or TXT file.</p>
 
@@ -19,7 +19,7 @@
             <span class="dashicons dashicons-yes-alt icon"></span>
             <p>
             Import complete! Failed to import <strong>26</strong> products.
-            <a href="#" class="woocommerce-importer-done-view-errors">View import log</a>.
+            <a href="#" class="importer-done-view-errors">View import log</a>.
             File uploaded: <strong>wc-product-export-18-11-2021-1637230637423-1.csv</strong>
             </p>
         </div>

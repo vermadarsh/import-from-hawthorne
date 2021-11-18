@@ -23,6 +23,9 @@
             File uploaded: <strong>wc-product-export-18-11-2021-1637230637423-1.csv</strong>
             </p>
         </div>
+        <div class="wc-actions text-right">
+            <a class="button button-primary" href="http://localhost/cmsminds/easy-reservations-system/wp-admin/edit.php?post_type=product">View products</a>
+        </div>
     </div>
 
 </section>

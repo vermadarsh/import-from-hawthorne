@@ -146,3 +146,26 @@ body.post-type-product .wrap a.page-title-action {
 .importer-done {
 	text-align: center;
 }
+.text-right{
+	text-align: right;
+}
+.import-from-hawthorne-wrapper .card .button {
+    font-size: 1.25em;
+    padding: .5em 1em!important;
+    line-height: 1.5em!important;
+    margin-right: .5em;
+    margin-bottom: 2px;
+    height: auto!important;
+    border-radius: 4px;
+    background-color: #bb77ae;
+    border-color: #a36597;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 0 #a36597;
+    text-shadow: 0 -1px 1px #a36597,1px 0 1px #a36597,0 1px 1px #a36597,-1px 0 1px #a36597;
+    margin: 0;
+    opacity: 1
+}
+.import-from-hawthorne-wrapper .card .button:hover {
+    background: #a36597;
+    border-color: #a36597;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25),0 1px 0 #a36597
+}

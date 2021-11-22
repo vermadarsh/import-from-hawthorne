@@ -199,13 +199,22 @@ body.post-type-product .wrap a.page-title-action {
 	transition: height 200ms;
 	height: 0; /* <-- set this */
 	font-size: 1rem;
+	margin-top: 24px;
 }
-.collapse-wrapper.open{
-	margin-bottom: 24px;
-}
-.collapse-wrapper .collapse-body{
+/* .collapse-wrapper.open{
+} */
+/* .collapse-wrapper .collapse-body{
 	padding: 24px;
+} */
+.collapse-wrapper .collapse-body table,
+.collapse-wrapper .collapse-body table thead th{
+	border: none;
 }
+.collapse-wrapper .collapse-body table thead th,
+.collapse-wrapper .collapse-body code{
+	font-weight: 700;
+}
+
 .relative{
 	position: relative;
 }

@@ -291,17 +291,8 @@ if ( ! function_exists( 'hawthorne_update_product_category_data' ) ) {
 		 * Before that, we need to check if that category exists or not.
 		 */
 		$category_term_exists = term_exists( $hawthorne_category_name, 'product_cat' );
-		var_dump( $hawthorne_category_name );
-		var_dump( $category_term_exists );
-
-		// If the category term doesn't exist, create one.
-		if ( is_null( $category_term_exists ) ) {
-			echo 'hello';
-			die;
-			$category_term_exists = hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name );
-		}
-		var_dump( $category_term_exists );
-		var_dump( $hawthorne_category_name );
+		$category_term_id     = ( is_null( $category_term_exists ) ) ? hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) : ( ( ! empty( $category_term_exists['term_id'] ) ) ? $category_term_exists['term_id'] : 0 );
+		var_dump( $category_term_id ); die;
 		die;
 	}
 }
@@ -317,6 +308,8 @@ if ( ! function_exists( 'hawthorne_create_product_category_term' ) ) {
 	 * @param string 
 	 */
 	function hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) {
+		var_dump( $hawthorne_category_name );
+		var_dump( htmlspecialchars_decode( $hawthorne_category_name ) );
 		// Insert the term now.
 		$term_details = wp_insert_term(
 			$hawthorne_category_name,

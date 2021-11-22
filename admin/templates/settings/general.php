@@ -53,7 +53,10 @@ $products_endpoint = hawthorne_get_plugin_settings( 'products_endpoint' );
 		<tr>
 			<th scope="row"><label for="api-secret-key"><?php esc_html_e( 'API Secret Key', 'import-from-hawthorne' ); ?></label></th>
 			<td>
-				<input type="password" required id="api-secret-key" name="api-secret-key" placeholder="****************" class="regular-text" value="<?php echo esc_html( $api_secret_key ); ?>">
+				<div class="relative">
+					<input type="password" required id="api-secret-key" name="api-secret-key" placeholder="****************" class="regular-text" value="<?php echo esc_html( $api_secret_key ); ?>">
+					<span id="togglePassword" class="eye-btn dashicons dashicons-visibility"></span>
+				</div>
 				<p class="description"><?php esc_html_e( 'Hawthorne secret API key.', 'import-from-hawthorne' ); ?></p>
 			</td>
 		</tr>

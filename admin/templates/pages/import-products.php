@@ -45,7 +45,7 @@ $total_products = count( $products );
 			</div>
 		</div>
 
-		<div class="card finish-card" style="display: none;">
+		<div class="card finish-card">  <!-- style="display: none;"> -->
 			<h2 class="heading"><?php esc_html_e( 'Import Complete!', 'import-from-hawthorne' ); ?></h2>
 			<div class="importer-done">
 				<span class="dashicons dashicons-yes-alt icon"></span>
@@ -56,9 +56,14 @@ $total_products = count( $products );
 					?>
 				</p>
 			</div>
+			<div class="collapse-wrapper">
+				<div class="collapse-body">
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius maiores vitae iure unde possimus fugiat impedit nulla, tempora sed pariatur asperiores omnis consectetur. Tempora mollitia numquam eveniet, saepe error optio.
+				</div>
+			</div>
 			<div class="wc-actions text-right">
 				<a class="button button-primary" href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>"><?php esc_html_e( 'View products', 'import-from-hawthorne' ); ?></a>
-				<a class="button button-secondary" href="javascript:void(0);"><?php esc_html_e( 'View import log', 'import-from-hawthorne' ); ?></a>
+				<a class="button button-secondary openCollapse_log" href="javascript:void(0);"><?php esc_html_e( 'View import log', 'import-from-hawthorne' ); ?></a>
 			</div>
 		</div>
 	</section>

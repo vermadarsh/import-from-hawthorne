@@ -122,4 +122,36 @@ jQuery( document ).ready( function( $ ) {
 	function unblock_element( element ) {
 		element.removeClass( 'non-clickable' );
 	}
+
+
+	/* collapse js */
+	var b = $(".openCollapse_log");
+	var w = $(".collapse-wrapper");
+	var l = $(".collapse-body");
+  
+	// w.height(l.outerHeight(true)); REMOVE THIS 
+  
+	b.click(function() {
+  
+	  if (w.hasClass('open')) {
+		w.removeClass('open');
+		w.height(0);
+	  } else {
+		w.addClass('open');
+		w.height(l.outerHeight(true));
+	  }
+  
+	});
+	// end collapse 
+
+	/* toogle password ( eye / eye slash ) */
+	$("#togglePassword").click(function () {
+		$(this).toggleClass("dashicons-hidden");
+		$(this).toggleClass("dashicons-visibility");
+	   	var type = $(this).hasClass("dashicons-hidden") ? "text" : "password";
+		$("#api-secret-key").attr("type", type);
+	});
+
+	/* end here */
+
 } );

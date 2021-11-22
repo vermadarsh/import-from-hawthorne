@@ -3,14 +3,18 @@
 	opacity: 0.5;
 }
 .dropdown {
-	position: absolute;
+	font-size: 1rem;
+	text-align: left;
 	display: inline-block;
+	position: absolute;
+	left: -999px;
+	top: -999px;
 	z-index: 1000;
 	padding: 0.5rem 0;
 	margin: 0;
-	font-size: 1rem;
-	text-align: left;
 	opacity: 0;
+	transform: translate(-115px, 40px);
+	transition: 0.3s ease-in-out all;
 }
 .dropdown.show {
     opacity: 1;

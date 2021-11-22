@@ -18,6 +18,8 @@
 }
 .dropdown.show {
     opacity: 1;
+	top: auto;
+	left: auto;
     transform: translate(-115px, 40px);
 }
 .wrap .page-title-action.dropdown-btn{

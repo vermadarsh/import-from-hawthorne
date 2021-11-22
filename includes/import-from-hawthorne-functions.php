@@ -224,7 +224,7 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 		// If the category data is available, update the product for the same.
 		if ( ! empty( $hawthorne_category_id ) && ! empty( $hawthorne_category_web_id ) && ! empty( $hawthorne_category_name ) ) {
 			hawthorne_update_product_category_data( $existing_product_id, $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name );
-			die;
+			die("pool");
 		}
 
 		die("before update");
@@ -264,14 +264,73 @@ if ( ! function_exists( 'hawthorne_update_product_category_data' ) ) {
 	 */
 	function hawthorne_update_product_category_data( $product_id, $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) {
 		// Get the category terms already assigned to the product.
-		$product_cats = wp_get_object_terms( $product_id, 'product_cat' );
+		$product_cats              = wp_get_object_terms( $product_id, 'product_cat' );
+		$category_already_assigned = false;
 
-		debug( $product_cats ); die;
-
-		// If there are some assigned category terms.
-		if ( ! empty( $product_cats ) ) {
-
+		// If there is no category assigned, we need to assign category.
+		if ( empty( $product_cats ) || ! is_array( $product_cats ) ) {
+			$category_already_assigned = false;
 		}
-		debug( $product_cats ); die;
+
+		// Check if the category received from the API is one of the assigned.
+		foreach ( $product_cats as $product_cat ) {
+			// If the category name matches, break the loop.
+			if ( $hawthorne_category_name === htmlspecialchars_decode( $product_cat->name ) ) {
+				$category_already_assigned = true;
+				break;
+			}
+		}
+
+		// Return, if the category is already assigned.
+		if ( true === $category_already_assigned ) {
+			return;
+		}
+
+		/**
+		 * Just in case the category is not assigned, let's assign it.
+		 * Before that, we need to check if that category exists or not.
+		 */
+		$category_term_exists = term_exists( $hawthorne_category_name, 'product_cat' );
+		var_dump( $hawthorne_category_name );
+		var_dump( $category_term_exists );
+
+		// If the category term doesn't exist, create one.
+		if ( is_null( $category_term_exists ) ) {
+			echo 'hello';
+			die;
+			$category_term_exists = hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name );
+		}
+		var_dump( $category_term_exists );
+		var_dump( $hawthorne_category_name );
+		die;
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_create_product_category_term' ) ) {
+	/**
+	 * Create a category term and save in the database.
+	 *
+	 * @param int $product_id Product ID from the WordPress database.
+	 * @param string 
+	 */
+	function hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) {
+		// Insert the term now.
+		$term_details = wp_insert_term(
+			$hawthorne_category_name,
+			'product_cat',
+			array(
+				'description' => '',
+				'slug'        => $hawthorne_category_web_id,
+				'parent'      => 0,
+			)
+		);
+
+		// Update the meta details.
+		update_term_meta( $term_details['term_id'], 'hawthorne_id', $hawthorne_category_id );
+
+		return $term_details['term_id'];
 	}
 }

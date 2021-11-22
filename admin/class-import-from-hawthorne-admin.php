@@ -271,11 +271,11 @@ class Import_From_Hawthorne_Admin {
 
 			// If the product doesn't exist.
 			if ( is_null( $product_exists ) ) {
-				// hawthorne_create_product( $part ); // Create product.
-				// $new_products_added++; // Increase the counter of new product created.
+				hawthorne_create_product( $part ); // Create product.
+				$new_products_added++; // Increase the counter of new product created.
 			} else {
-				// hawthorne_update_product( $product_exists->ID, $part ); // Update product.
-				// $old_products_updated++; // Increase the counter of old product updated.
+				hawthorne_update_product( $product_exists->ID, $part ); // Update product.
+				$old_products_updated++; // Increase the counter of old product updated.
 			}
 		}
 

@@ -25,7 +25,7 @@ jQuery( document ).ready( function( $ ) {
 		var new_products_added     = 0;
 		var old_products_updated   = 0;
 		var products_import_failed = 0;
-		kickoff_product_import( 258, new_products_added, old_products_updated, products_import_failed );
+		kickoff_product_import( 1, new_products_added, old_products_updated, products_import_failed );
 	} );
 
 	/**

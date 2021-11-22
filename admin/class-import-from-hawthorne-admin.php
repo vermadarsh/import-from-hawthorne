@@ -108,7 +108,7 @@ class Import_From_Hawthorne_Admin {
 			__( 'Hawthorne Integration', 'import-from-hawthorne' ),
 			__( 'Hawthorne Integration', 'import-from-hawthorne' ),
 			'manage_options',
-			'import-from-hawthorne',
+			'hawthorne',
 			array( $this, 'hawthorne_admin_settings_callback' )
 		);
 
@@ -133,7 +133,7 @@ class Import_From_Hawthorne_Admin {
 	 */
 	public function hawthorne_admin_settings_callback() {
 		$tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
-		$tab = ( ! is_null( $tab ) ) ? $tab : 'hawthorne-general';
+		$tab = ( ! is_null( $tab ) ) ? $tab : 'settings';
 		?>
 		<div class="wrap">
 			<div class="hawthorne-plugin-settings-header">
@@ -157,13 +157,13 @@ class Import_From_Hawthorne_Admin {
 	 */
 	public function hawthorne_generate_plugin_settings_tabs() {
 		$tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
-		$tab = ( ! is_null( $tab ) ) ? $tab : 'hawthorne-general';
+		$tab = ( ! is_null( $tab ) ) ? $tab : 'settings';
 		echo '<h2 class="nav-tab-wrapper">';
 
 		// Iterate through the tabs.
 		foreach ( $this->plugin_settings_tabs as $tab_key => $tab_caption ) {
 			$active = ( $tab === $tab_key ) ? 'nav-tab-active' : '';
-			echo '<a class="nav-tab ' . $active . '" href="?page=import-from-hawthorne&tab=' . $tab_key . '">' . $tab_caption . '</a>';
+			echo '<a class="nav-tab ' . $active . '" href="?page=hawthorne&tab=' . $tab_key . '">' . $tab_caption . '</a>';
 		}
 
 		echo '</h2>';
@@ -176,14 +176,14 @@ class Import_From_Hawthorne_Admin {
 	 */
 	public function hawthorne_plugin_settings_templates_callback() {
 		// General settings.
-		$this->plugin_settings_tabs['hawthorne-general'] = __( 'General', 'import-from-hawthorne' );
-		register_setting( 'hawthorne-general', 'hawthorne-general' );
-		add_settings_section( 'tab-general', ' ', array( &$this, 'hawthorne_plugin_general_settings_callback' ), 'hawthorne-general' );
+		$this->plugin_settings_tabs['settings'] = __( 'Settings', 'import-from-hawthorne' );
+		register_setting( 'settings', 'settings' );
+		add_settings_section( 'tab-general', ' ', array( &$this, 'hawthorne_plugin_general_settings_callback' ), 'settings' );
 
 		// Test API settings.
-		$this->plugin_settings_tabs['hawthorne-api-connection'] = __( 'API Connection', 'import-from-hawthorne' );
-		register_setting( 'hawthorne-api-connection', 'hawthorne-api-connection' );
-		add_settings_section( 'tab-api-connection', ' ', array( &$this, 'hawthorne_plugin_api_connection_settings_callback' ), 'hawthorne-api-connection' );
+		$this->plugin_settings_tabs['test-api'] = __( 'Test API', 'import-from-hawthorne' );
+		register_setting( 'test-api', 'test-api' );
+		add_settings_section( 'tab-test-api', ' ', array( &$this, 'hawthorne_plugin_api_connection_settings_callback' ), 'test-api' );
 	}
 
 	/**
@@ -271,11 +271,11 @@ class Import_From_Hawthorne_Admin {
 
 			// If the product doesn't exist.
 			if ( is_null( $product_exists ) ) {
-				hawthorne_create_product( $part ); // Create product.
-				$new_products_added++; // Increase the counter of new product created.
+				// hawthorne_create_product( $part ); // Create product.
+				// $new_products_added++; // Increase the counter of new product created.
 			} else {
-				hawthorne_update_product( $product_exists->ID, $part ); // Update product.
-				$old_products_updated++; // Increase the counter of old product updated.
+				// hawthorne_update_product( $product_exists->ID, $part ); // Update product.
+				// $old_products_updated++; // Increase the counter of old product updated.
 			}
 		}
 

@@ -94,11 +94,10 @@ if ( ! function_exists( 'hawthorne_fetch_products' ) ) {
 	/**
 	 * Get the products imported from Hawthorne.
 	 *
-	 * @param string $return_type Return data type.
 	 * @return array|string|boolean
 	 * @since 1.0.0
 	 */
-	function hawthorne_fetch_products( $return_type = 'array' ) {
+	function hawthorne_fetch_products() {
 		hawthorne_write_import_log( 'NOTICE: Starting to import products.' ); // Write the log.
 		$products_endpoint = hawthorne_get_plugin_settings( 'products_endpoint' );
 		$api_key           = hawthorne_get_plugin_settings( 'api_key' );
@@ -126,12 +125,6 @@ if ( ! function_exists( 'hawthorne_fetch_products' ) ) {
 		// If everything is OK.
 		if ( 200 === $api_response_code ) {
 			$api_response_body = wp_remote_retrieve_body( $api_response ); // Get the response body.
-
-			// If the return type is JSON.
-			if ( ! empty( $return_type ) && 'json' === $return_type ) {
-				return $api_response_body;
-			}
-
 			return ( ! empty( $api_response_body ) ) ? json_decode( $api_response_body ) : array();
 		} else {
 			return false;
@@ -218,14 +211,67 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 	 * @return int
 	 */
 	function hawthorne_update_product( $existing_product_id, $part ) {
+		global $wpdb;
 		$sku     = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
 		$msrp    = ( ! empty( $part['EachMsrp'] ) ) ? $part['EachMsrp'] : '';
 		$content = ( ! empty( $part['Description'] ) ) ? $part['Description'] : '';
 
-		// die("before update");
+		// Category data.
+		$hawthorne_category_id     = ( ! empty( $part['CategoryId'] ) ) ? $part['CategoryId'] : '';
+		$hawthorne_category_web_id = ( ! empty( $part['CategoryWebId'] ) ) ? $part['CategoryWebId'] : '';
+		$hawthorne_category_name   = ( ! empty( $part['CategoryName'] ) ) ? $part['CategoryName'] : '';
+
+		// If the category data is available, update the product for the same.
+		if ( ! empty( $hawthorne_category_id ) && ! empty( $hawthorne_category_web_id ) && ! empty( $hawthorne_category_name ) ) {
+			hawthorne_update_product_category_data( $existing_product_id, $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name );
+			die;
+		}
+
+		die("before update");
 		// Update the data now.
-		// update_post_meta( $existing_product_id, '_sku', $sku );
-		// update_post_meta( $existing_product_id, '_regular_price', $msrp );
-		// update_post_meta( $existing_product_id, '_price', $msrp );
+		update_post_meta( $existing_product_id, '_sku', $sku );
+		update_post_meta( $existing_product_id, '_regular_price', $msrp );
+		update_post_meta( $existing_product_id, '_price', $msrp );
+
+		// Update the post content now.
+		$wpdb->update(
+			$wpdb->posts,
+			array(
+				'post_content' => $content,
+			),
+			array(
+				'ID' => $existing_product_id,
+			),
+			array(
+				'%s',
+			),
+			array(
+				'%d',
+			)
+		);
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_update_product_category_data' ) ) {
+	/**
+	 * Update the category data of the product.
+	 *
+	 * @param int $product_id Product ID from the WordPress database.
+	 * @param string 
+	 */
+	function hawthorne_update_product_category_data( $product_id, $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) {
+		// Get the category terms already assigned to the product.
+		$product_cats = wp_get_object_terms( $product_id, 'product_cat' );
+
+		debug( $product_cats ); die;
+
+		// If there are some assigned category terms.
+		if ( ! empty( $product_cats ) ) {
+
+		}
+		debug( $product_cats ); die;
 	}
 }

@@ -9,11 +9,13 @@
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
+// delete_transient( 'hawthorne_product_items' ); die;
+
 // Fetch the products data from the transient.
 $products = get_transient( 'hawthorne_product_items' );
 
 // See if there are products in the transient.
-if ( empty( $products ) ) {
+if ( false === $products ) {
 	$products = hawthorne_fetch_products(); // Shoot the API to get products.
 
 	/**
@@ -23,10 +25,12 @@ if ( empty( $products ) ) {
 	if ( false !== $products ) {
 		set_transient( 'hawthorne_product_items', wp_json_encode( $products ), ( 60*60*12 ) );
 	}
+} else {
+	// If you're here, the data is already in transients.
+	$products = json_decode( $products, true );
 }
 
 // Get the count of the products.
-$products       = json_decode( $products, true );
 $total_products = count( $products );
 ?>
 <div class="wrap">
@@ -54,7 +58,7 @@ $total_products = count( $products );
 			</div>
 			<div class="wc-actions text-right">
 				<a class="button button-primary" href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>"><?php esc_html_e( 'View products', 'import-from-hawthorne' ); ?></a>
-				<a class="button button-primary" href="javascript:void(0);"><?php esc_html_e( 'View import log', 'import-from-hawthorne' ); ?></a>
+				<a class="button button-secondary" href="javascript:void(0);"><?php esc_html_e( 'View import log', 'import-from-hawthorne' ); ?></a>
 			</div>
 		</div>
 	</section>

@@ -148,7 +148,7 @@ function hawthorne_admin_notices_callback() {
  */
 function hawthorne_plugin_actions_callback( $links ) {
 	$this_plugin_links = array(
-		'<a title="' . __( 'Settings', 'import-from-hawthorne' ) . '" href="' . esc_url( admin_url( 'admin.php?page=import-from-hawthorne' ) ) . '">' . __( 'Settings', 'import-from-hawthorne' ) . '</a>',
+		'<a title="' . __( 'Settings', 'import-from-hawthorne' ) . '" href="' . esc_url( admin_url( 'admin.php?page=hawthorne' ) ) . '">' . __( 'Settings', 'import-from-hawthorne' ) . '</a>',
 		'<a title="' . __( 'Docs', 'import-from-hawthorne' ) . '" href="javascript:void(0);">' . __( 'Docs', 'import-from-hawthorne' ) . '</a>',
 	);
 

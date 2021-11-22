@@ -45,7 +45,7 @@ $total_products = count( $products );
 			</div>
 		</div>
 
-		<div class="card finish-card">  <!-- style="display: none;"> -->
+		<div class="card finish-card" style="display: none;">
 			<h2 class="heading"><?php esc_html_e( 'Import Complete!', 'import-from-hawthorne' ); ?></h2>
 			<div class="importer-done">
 				<span class="dashicons dashicons-yes-alt icon"></span>

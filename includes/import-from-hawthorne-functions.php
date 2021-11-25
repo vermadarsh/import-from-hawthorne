@@ -211,6 +211,7 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 	 * @return int
 	 */
 	function hawthorne_update_product( $existing_product_id, $part ) {
+		debug( $part ); die;
 		global $wpdb;
 		$sku     = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
 		$msrp    = ( ! empty( $part['EachMsrp'] ) ) ? $part['EachMsrp'] : '';
@@ -224,31 +225,73 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 		// If the category data is available, update the product for the same.
 		if ( ! empty( $hawthorne_category_id ) && ! empty( $hawthorne_category_web_id ) && ! empty( $hawthorne_category_name ) ) {
 			hawthorne_update_product_category_data( $existing_product_id, $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name );
-			die("pool");
 		}
 
-		die("before update");
+		// Brand data.
+		$hawthorne_brand_id     = ( ! empty( $part['BrandId'] ) ) ? $part['BrandId'] : '';
+		$hawthorne_brand_web_id = ( ! empty( $part['BrandWebId'] ) ) ? $part['BrandWebId'] : '';
+		$hawthorne_brand_name   = ( ! empty( $part['BrandName'] ) ) ? $part['BrandName'] : '';
+
+		// If the brand data is available, update the product for the same.
+		if ( ! empty( $hawthorne_brand_id ) && ! empty( $hawthorne_brand_web_id ) && ! empty( $hawthorne_brand_name ) ) {
+			hawthorne_update_product_brand_data( $existing_product_id, $hawthorne_brand_id, $hawthorne_brand_web_id, $hawthorne_brand_name );
+		}
+
+		// Product image.
+		$product_image_url     = ( ! empty( $part['ImageMedium'] ) ) ? $part['ImageMedium'] : '';
+		$product_image_url     = ( ! empty( $product_image_url ) ) ? $product_image_url : ( ( ! empty( $part['ImageFamilyMedium'] ) ) ? $part['ImageFamilyMedium'] : '' );
+		$product_has_thumbnail = has_post_thumbnail( $existing_product_id );
+
+		// If the product doesn't have featured image set, we need to set one.
+		if ( ! empty( $product_image_url ) && false === $product_has_thumbnail ) {
+			hawthorne_update_product_featured_image( $product_image_url, $existing_product_id );
+		}
+
+		// Published date.
+		$published_date = ( ! empty( $part['NewDate'] ) ) ? $part['NewDate'] : '';
+		$published_date = ( ! empty( $published_date ) ) ? gmdate( 'Y-m-d H:i:s', strtotime( $published_date ) ) : gmdate( 'Y-m-d H:i:s' );
+
+		// Product dimentional details.
+		$product_upc        = ( ! empty( $part['EachUpc'] ) ) ? $part['EachUpc'] : '';
+		$product_volume     = ( ! empty( $part['EachVolume'] ) ) ? $part['EachVolume'] : '';
+		$product_dim_weight = ( ! empty( $part['EachDimWeight'] ) ) ? $part['EachDimWeight'] : '';
+		$product_weight     = ( ! empty( $part['EachWeight'] ) ) ? $part['EachWeight'] : '';
+		$product_length     = ( ! empty( $part['EachLength'] ) ) ? $part['EachLength'] : '';
+		$product_width      = ( ! empty( $part['EachWidth'] ) ) ? $part['EachWidth'] : '';
+		$product_height     = ( ! empty( $part['EachHeight'] ) ) ? $part['EachHeight'] : '';
+
 		// Update the data now.
 		update_post_meta( $existing_product_id, '_sku', $sku );
 		update_post_meta( $existing_product_id, '_regular_price', $msrp );
 		update_post_meta( $existing_product_id, '_price', $msrp );
+		update_post_meta( $existing_product_id, '_height', $product_height );
+		update_post_meta( $existing_product_id, '_width', $product_width );
+		update_post_meta( $existing_product_id, '_length', $product_length );
+		update_post_meta( $existing_product_id, '_weight', $product_weight );
+		update_post_meta( $existing_product_id, '_dim_weight', $product_dim_weight );
+		update_post_meta( $existing_product_id, '_volume', $product_volume );
+		update_post_meta( $existing_product_id, '_upc', $product_upc );
 
 		// Update the post content now.
 		$wpdb->update(
 			$wpdb->posts,
 			array(
 				'post_content' => $content,
+				'post_date'    => $published_date,
 			),
 			array(
 				'ID' => $existing_product_id,
 			),
 			array(
 				'%s',
+				'%s',
 			),
 			array(
 				'%d',
 			)
 		);
+
+		die("updated");
 	}
 }
 
@@ -290,10 +333,57 @@ if ( ! function_exists( 'hawthorne_update_product_category_data' ) ) {
 		 * Just in case the category is not assigned, let's assign it.
 		 * Before that, we need to check if that category exists or not.
 		 */
-		$category_term_exists = term_exists( $hawthorne_category_name, 'product_cat' );
-		$category_term_id     = ( is_null( $category_term_exists ) ) ? hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) : ( ( ! empty( $category_term_exists['term_id'] ) ) ? $category_term_exists['term_id'] : 0 );
-		var_dump( $category_term_id ); die;
-		die;
+		$category_term_exists = term_exists( $hawthorne_category_web_id, 'product_cat' );
+		$category_term_id     = ( is_null( $category_term_exists ) ) ? hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) : ( ( ! empty( $category_term_exists['term_id'] ) ) ? (int) $category_term_exists['term_id'] : 0 );
+
+		// Now that the category term is created, let's assign this term to the product.
+		wp_set_object_terms( $product_id, $category_term_id, 'product_cat' );
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_update_product_brand_data' ) ) {
+	/**
+	 * Update the brand data of the product.
+	 *
+	 * @param int $product_id Product ID from the WordPress database.
+	 * @param string 
+	 */
+	function hawthorne_update_product_brand_data( $product_id, $hawthorne_brand_id, $hawthorne_brand_web_id, $hawthorne_brand_name ) {
+		// Get the brand terms already assigned to the product.
+		$product_brands         = wp_get_object_terms( $product_id, 'product_brand' );
+		$brand_already_assigned = false;
+
+		// If there is no brand assigned, we need to assign one.
+		if ( empty( $product_brands ) || ! is_array( $product_brands ) ) {
+			$brand_already_assigned = false;
+		}
+
+		// Check if the brand received from the API is one of the assigned.
+		foreach ( $product_brands as $product_brand ) {
+			// If the brand name matches, break the loop.
+			if ( $hawthorne_brand_name === htmlspecialchars_decode( $product_brand->name ) ) {
+				$brand_already_assigned = true;
+				break;
+			}
+		}
+
+		// Return, if the brand is already assigned.
+		if ( true === $brand_already_assigned ) {
+			return;
+		}
+
+		/**
+		 * Just in case the brand is not assigned, let's assign it.
+		 * Before that, we need to check if that brand exists or not.
+		 */
+		$brand_term_exists = term_exists( $hawthorne_brand_web_id, 'product_brand' );
+		$brand_term_id     = ( is_null( $brand_term_exists ) ) ? hawthorne_create_product_brand_term( $hawthorne_brand_id, $hawthorne_brand_web_id, $hawthorne_brand_name ) : ( ( ! empty( $brand_term_exists['term_id'] ) ) ? (int) $brand_term_exists['term_id'] : 0 );
+
+		// Now that the brand term is created, let's assign this term to the product.
+		wp_set_object_terms( $product_id, $brand_term_id, 'product_brand' );
 	}
 }
 
@@ -308,8 +398,6 @@ if ( ! function_exists( 'hawthorne_create_product_category_term' ) ) {
 	 * @param string 
 	 */
 	function hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) {
-		var_dump( $hawthorne_category_name );
-		var_dump( htmlspecialchars_decode( $hawthorne_category_name ) );
 		// Insert the term now.
 		$term_details = wp_insert_term(
 			$hawthorne_category_name,
@@ -325,5 +413,161 @@ if ( ! function_exists( 'hawthorne_create_product_category_term' ) ) {
 		update_term_meta( $term_details['term_id'], 'hawthorne_id', $hawthorne_category_id );
 
 		return $term_details['term_id'];
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_create_product_brand_term' ) ) {
+	/**
+	 * Create a brand term and save in the database.
+	 *
+	 * @param int $product_id Product ID from the WordPress database.
+	 * @param string 
+	 */
+	function hawthorne_create_product_brand_term( $hawthorne_brand_id, $hawthorne_brand_web_id, $hawthorne_brand_name ) {
+		// Insert the term now.
+		$term_details = wp_insert_term(
+			$hawthorne_brand_name,
+			'product_brand',
+			array(
+				'description' => '',
+				'slug'        => $hawthorne_brand_web_id,
+				'parent'      => 0,
+			)
+		);
+
+		// Update the meta details.
+		update_term_meta( $term_details['term_id'], 'hawthorne_id', $hawthorne_brand_id );
+
+		return $term_details['term_id'];
+	}
+}
+
+/**
+ * Check if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_register_product_brand_taxonomy' ) ) {
+	/**
+	 * This function registers product brand taxonomy.
+	 */
+	function hawthorne_register_product_brand_taxonomy() {
+		$labels = array(
+			'name'              => _x( 'Brands', 'taxonomy general name', 'import-from-hawthorne' ),
+			'singular_name'     => _x( 'Brand', 'taxonomy singular name', 'import-from-hawthorne' ),
+			'search_items'      => __( 'Search Brand', 'import-from-hawthorne' ),
+			'all_items'         => __( 'All Brands', 'import-from-hawthorne' ),
+			'parent_item'       => __( 'Parent Brand', 'import-from-hawthorne' ),
+			'parent_item_colon' => __( 'Parent Brand:', 'import-from-hawthorne' ),
+			'edit_item'         => __( 'Edit Brand', 'import-from-hawthorne' ),
+			'update_item'       => __( 'Update Brand', 'import-from-hawthorne' ),
+			'add_new_item'      => __( 'Add New Brand', 'import-from-hawthorne' ),
+			'new_item_name'     => __( 'New Brand Name', 'import-from-hawthorne' ),
+			'menu_name'         => __( 'Brands', 'import-from-hawthorne' ),
+		);
+
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_in_menu'      => true,
+			'show_admin_column' => true,
+			'query_var'         => true,
+			'rewrite'           => array( 'slug' => 'product_brand' ),
+		);
+
+		register_taxonomy( 'product_brand', array( 'product' ), $args );
+	}
+}
+
+/**
+ * Check if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_update_product_featured_image' ) ) {
+	/**
+	 * Update the featured image of the product.
+	 *
+	 * @param string $image_url Image URL.
+	 * @param int    $product_id Existing product ID.
+	 *
+	 * @since 1.0.0
+	 */
+	function hawthorne_update_product_featured_image( $image_url, $product_id ) {
+		$image_basename   = pathinfo( $image_url );
+		$image_name       = $image_basename['basename'];
+		$upload_dir       = wp_upload_dir();
+		$image_data       = hawthorne_get_image_data( $image_url );
+
+		// Return, if image data is not properly received.
+		if ( is_null( $image_data ) ) {
+			return;
+		}
+
+		$unique_file_name = wp_unique_filename( $upload_dir['path'], $image_name );
+		$filename         = basename( $unique_file_name );
+
+		// Check folder permission and define file location.
+		if ( wp_mkdir_p( $upload_dir['path'] ) ) {
+			$file = $upload_dir['path'] . '/' . $filename;
+		} else {
+			$file = $upload_dir['basedir'] . '/' . $filename;
+		}
+
+		// Create the image  file on the server.
+		file_put_contents( $file, $image_data );
+
+		// Check image file type.
+		$wp_filetype = wp_check_filetype( $filename, null );
+
+		// Set attachment data.
+		$attachment = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_title'     => sanitize_file_name( $filename ),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+		);
+
+		// Create the attachment.
+		$attach_id = wp_insert_attachment( $attachment, $file, 0 );
+
+		// Include image.php file.
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+
+		// Define attachment metadata.
+		$attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+
+		// Assign metadata to attachment.
+		wp_update_attachment_metadata( $attach_id, $attach_data );
+
+		// Assign the attachment ID to the product.
+		set_post_thumbnail( $product_id, $attach_id );
+	}
+}
+
+/**
+ * Check if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_get_image_data' ) ) {
+	/**
+	 * Get image data from image URL.
+	 *
+	 * @param string $image_url Holds the image URL.
+	 * @return string
+	 */
+	function hawthorne_get_image_data( $image_url ) {
+
+		if ( '' === $image_url ) {
+			return;
+		}
+
+		$response      = wp_remote_get( $image_url );
+		$response_code = wp_remote_retrieve_response_code( $response );
+
+		if ( 200 !== $response_code ) {
+			return;
+		}
+
+		return wp_remote_retrieve_body( $response );
 	}
 }

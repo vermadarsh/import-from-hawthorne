@@ -100,6 +100,9 @@ class Import_From_Hawthorne {
 		// The file is responsible for defining all custom functions.
 		require_once HAWTHORNE_PLUGIN_PATH . 'includes/import-from-hawthorne-functions.php';
 
+		// The file is responsible for defining custom email notifications.
+		require_once HAWTHORNE_PLUGIN_PATH . 'includes/emails/class-import-from-hawthorne-emails-manager.php';
+
 		// The class responsible for defining all actions that occur in the admin area.
 		require_once HAWTHORNE_PLUGIN_PATH . 'admin/class-import-from-hawthorne-admin.php';
 
@@ -142,6 +145,9 @@ class Import_From_Hawthorne {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'hawthorne_plugin_settings_templates_callback' );
 		$this->loader->add_action( 'wp_ajax_kickoff_products_import', $plugin_admin, 'hawthorne_kickoff_products_import_callback' );
 		$this->loader->add_filter( 'parent_file', $plugin_admin, 'hawthorne_parent_file_callback' );
+		$this->loader->add_action( 'woocommerce_product_options_dimensions', $plugin_admin, 'hawthorne_woocommerce_product_options_dimensions_callback' );
+		$this->loader->add_action( 'woocommerce_product_options_sku', $plugin_admin, 'hawthorne_woocommerce_product_options_sku_callback' );
+		$this->loader->add_action( 'woocommerce_process_product_meta', $plugin_admin, 'hawthorne_woocommerce_process_product_meta_callback' );
 	}
 
 	/**
@@ -155,7 +161,9 @@ class Import_From_Hawthorne {
 		$plugin_public = new Import_From_Hawthorne_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'hawthorne_wp_enqueue_scripts_callback' );
-		$this->loader->add_action( 'wp', $plugin_public, 'hawthorne_wp_callback' );
+		$this->loader->add_action( 'init', $plugin_public, 'hawthorne_init_callback' );
+		$this->loader->add_action( 'woocommerce_proceed_to_checkout', $plugin_public, 'hawthorne_woocommerce_proceed_to_checkout_callback', 30 );
+		$this->loader->add_action( 'wp_footer', $plugin_public, 'hawthorne_wp_footer_callback' );
 	}
 
 	/**

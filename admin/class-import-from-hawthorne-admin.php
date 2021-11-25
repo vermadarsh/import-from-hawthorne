@@ -310,4 +310,97 @@ class Import_From_Hawthorne_Admin {
 
 		return $parent_file;
 	}
+
+	/**
+	 * Add custom fields in the shipping section, the data of which is provided by Hawthorne.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_product_options_dimensions_callback() {
+		$product_id = get_the_ID();
+
+		// Dim. weight field.
+		woocommerce_wp_text_input(
+			array(
+				'id'          => '_dim_weight',
+				'value'       => get_post_meta( $product_id, '_dim_weight', true ),
+				'label'       => __( 'Dim. Weight', 'import-from-hawthorne' ) . ' (' . get_option( 'woocommerce_weight_unit' ) . ')',
+				'placeholder' => wc_format_localized_decimal( 0 ),
+				'desc_tip'    => true,
+				'description' => __( 'Dim. weight of the product. This data is provided by Hawthorne.', 'import-from-hawthorne' ),
+				'type'        => 'text',
+				'data_type'   => 'decimal',
+			)
+		);
+
+		// Volume field.
+		woocommerce_wp_text_input(
+			array(
+				'id'          => '_volume',
+				'value'       => get_post_meta( $product_id, '_volume', true ),
+				'label'       => __( 'Volume', 'import-from-hawthorne' ) . ' (' . get_option( 'woocommerce_weight_unit' ) . ')',
+				'placeholder' => wc_format_localized_decimal( 0 ),
+				'desc_tip'    => true,
+				'description' => __( 'Volume of the product. This data is provided by Hawthorne.', 'import-from-hawthorne' ),
+				'type'        => 'text',
+				'data_type'   => 'decimal',
+			)
+		);
+	}
+
+	/**
+	 * Add custom fields in the shipping section, the data of which is provided by Hawthorne.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_product_options_sku_callback() {
+		$product_id = get_the_ID();
+
+		// UPC field.
+		woocommerce_wp_text_input(
+			array(
+				'id'          => '_upc',
+				'value'       => get_post_meta( $product_id, '_upc', true ),
+				'label'       => __( 'UPC', 'import-from-hawthorne' ),
+				'placeholder' => '',
+				'desc_tip'    => true,
+				'description' => __( 'Product\'s UPC. This data is provided by Hawthorne.', 'import-from-hawthorne' ),
+				'type'        => 'text',
+			)
+		);
+	}
+
+	/**
+	 * Update product custom meta details.
+	 *
+	 * @param int $product_id Holds the product ID.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_process_product_meta_callback( $product_id ) {
+		$dim_weight = filter_input( INPUT_POST, '_dim_weight', FILTER_SANITIZE_STRING );
+		$volume     = filter_input( INPUT_POST, '_volume', FILTER_SANITIZE_STRING );
+		$upc        = filter_input( INPUT_POST, '_upc', FILTER_SANITIZE_STRING );
+
+		// If product dim. weight is available.
+		if ( ! empty( $dim_weight ) ) {
+			update_post_meta( $product_id, '_dim_weight', $dim_weight );
+		} else {
+			delete_post_meta( $product_id, '_dim_weight' );
+		}
+
+		// If product volume is available.
+		if ( ! empty( $volume ) ) {
+			update_post_meta( $product_id, '_volume', $volume );
+		} else {
+			delete_post_meta( $product_id, '_volume' );
+		}
+
+		// If product UPC is available.
+		if ( ! empty( $upc ) ) {
+			update_post_meta( $product_id, '_upc', $upc );
+		} else {
+			delete_post_meta( $product_id, '_upc' );
+		}
+	}
 }

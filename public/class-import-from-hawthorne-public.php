@@ -75,6 +75,41 @@ class Import_From_Hawthorne_Public {
 		);
 	}
 
-	public function hawthorne_wp_callback() {
+	/**
+	 * Register product brand taxonomy.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_init_callback() {
+		// Register product brand taxonomy.
+		hawthorne_register_product_brand_taxonomy();
+
+		// do_action( 'shoot_cart_to_greenlight_email', array() );
+	}
+
+	/**
+	 * Add button on the cart page to help shoot the email to greenlight.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_proceed_to_checkout_callback() {
+		?>
+		<a href="javascript:void(0);" class="checkout-button button alt wc-forward">
+			<?php esc_html_e( 'Shoot the mail', 'import-from-hawthorne' ); ?>
+		</a>
+		<?php
+	}
+
+	/**
+	 * Add custom assets in the footer section of the page.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_wp_footer_callback() {
+		// Check if it the cart page.
+		if ( is_cart() ) {
+			// Include the cart contents email modal.
+			require_once HAWTHORNE_PLUGIN_PATH . 'public/templates/modals/shoot-cart-contents.php';
+		}
 	}
 }

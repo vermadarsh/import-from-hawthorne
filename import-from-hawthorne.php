@@ -154,3 +154,6 @@ function hawthorne_plugin_actions_callback( $links ) {
 
 	return array_merge( $this_plugin_links, $links );
 }
+
+// Remove cart page actions to replace the button, "Proceed to Checkout"
+remove_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout' );

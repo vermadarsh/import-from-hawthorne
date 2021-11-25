@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @subpackage Import_From_Hawthorne/includes/emails
  * @author     Adarsh Verma <adarsh@cmsminds.com>
  */
-class Easy_Reservations_Custom_Email_Manager {
+class Hawthorne_Custom_Email_Manager {
 	/**
 	 * Constructor to help define actions.
 	 */
@@ -62,4 +62,4 @@ class Easy_Reservations_Custom_Email_Manager {
 	}
 }
 
-new Easy_Reservations_Custom_Email_Manager();
+new Hawthorne_Custom_Email_Manager();

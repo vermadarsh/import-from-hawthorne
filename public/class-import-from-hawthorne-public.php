@@ -97,7 +97,7 @@ class Import_From_Hawthorne_Public {
 		// Register product brand taxonomy.
 		hawthorne_register_product_brand_taxonomy();
 
-		$customer_details = array(
+		/*$customer_details = array(
 			'name' => 'Adarsh Verma',
 			'email' => 'adarsh.srmcem@gmail.com',
 			'phone' => '07318216218',
@@ -131,7 +131,7 @@ class Import_From_Hawthorne_Public {
 			),
 		);
 
-		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items );
+		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items );*/
 	}
 
 	/**

@@ -8,11 +8,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/* translators: 1: %s: order ID, 2: order date */
-$opening_paragraph = sprintf( __( 'This is a kind reminder about your reservation order #%1$d that was placed on %2$s. The details about the reservation item are as follows:', 'easy-reservations' ), $item_data->order_id, $item_data->order_date );
-$view_order_url    = $item_data->order_view_url;
-$order_item        = $item_data->item;
-
 /**
  * This hook runs on the custom email headers.
  *
@@ -23,69 +18,81 @@ $order_item        = $item_data->item;
  */
 do_action( 'woocommerce_email_header', $email_heading );
 ?>
-<p><?php echo esc_html( $opening_paragraph ); ?></p>
+<p><?php esc_html_e( 'Congratulations !! There is a cart request from a customer.', 'import-from-hawthorne' ); ?></p>
+<h3><?php esc_html_e( 'Customer details:', 'import-from-hawthorne' ); ?></h3>
 <table cellspacing="0" cellpadding="6" style="width: 100%; border: 1px solid #eee;" bordercolor="#eee">
 	<tbody>
+		<!-- CUSTOMER NAME -->
 		<tr>
-			<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php echo esc_html( $order_item['item'] ); ?></th>
+			<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php esc_html_e( 'Name', 'import-from-hawthorne' ); ?></th>
 			<td style="text-align:left; border: 1px solid #eee;">
-				<?php
-				// Print the item subtotal.
-				if ( ! empty( $order_item['subtotal'] ) ) {
-					/* translators: 1: %s: order item subtotal */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Subtotal: %1$s', 'easy-reservations' ), wc_price( $order_item['subtotal'] ) ) . '</p>' );
-				}
-
-				// Print the item checkin date.
-				if ( ! empty( $order_item['checkin_date'] ) ) {
-					/* translators: 1: %s: reservation checkin date */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Checkin Date: %1$s', 'easy-reservations' ), $order_item['checkin_date'] ) . '</p>' );
-				}
-
-				// Print the item checkout date.
-				if ( ! empty( $order_item['checkout_date'] ) ) {
-					/* translators: 1: %s: reservation checkout date */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Checkout Date: %1$s', 'easy-reservations' ), $order_item['checkout_date'] ) . '</p>' );
-				}
-
-				// Print the adult count.
-				if ( ! empty( $order_item['adult_count'] ) ) {
-					/* translators: 1: %s: reservation adult count */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Adult Count: %1$s', 'easy-reservations' ), $order_item['adult_count'] ) . '</p>' );
-				}
-
-				// Print the adult subtotal.
-				if ( ! empty( $order_item['adult_subtotal'] ) ) {
-					/* translators: 1: %s: reservation adult subtotal */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Adult Subtotal: %1$s', 'easy-reservations' ), wc_price( $order_item['adult_subtotal'] ) ) . '</p>' );
-				}
-
-				// Print the kids count.
-				if ( ! empty( $order_item['kids_count'] ) ) {
-					/* translators: 1: %s: reservation kids count */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Kids Count: %1$s', 'easy-reservations' ), $order_item['kids_count'] ) . '</p>' );
-				}
-
-				// Print the kids subtotal.
-				if ( ! empty( $order_item['kids_subtotal'] ) ) {
-					/* translators: 1: %s: reservation kids subtotal */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Kids Subtotal: %1$s', 'easy-reservations' ), wc_price( $order_item['kids_subtotal'] ) ) . '</p>' );
-				}
-
-				// Print the security amount.
-				if ( ! empty( $order_item['security'] ) ) {
-					/* translators: 1: %s: reservation security subtotal */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Security: %1$s', 'easy-reservations' ), wc_price( $order_item['security'] ) ) . '</p>' );
-				}
-
-				// Print the amenities subtotal.
-				if ( ! empty( $order_item['amenities_subtotal'] ) ) {
-					/* translators: 1: %s: reservation amenities subtotal */
-					echo wp_kses_post( '<p>' . sprintf( __( 'Amenities Subtotal: %1$s', 'easy-reservations' ), wc_price( $order_item['amenities_subtotal'] ) ) . '</p>' );
-				}
-				?>
+				<?php echo esc_html( ( ! empty( $email_data->customer['name'] ) ? $email_data->customer['name'] : '' ) ); ?>
 			</td>
 		</tr>
+		<!-- CUSTOMER EMAIL -->
+		<tr>
+			<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php esc_html_e( 'Email', 'import-from-hawthorne' ); ?></th>
+			<td style="text-align:left; border: 1px solid #eee;">
+				<?php echo esc_html( ( ! empty( $email_data->customer['email'] ) ? $email_data->customer['email'] : '' ) ); ?>
+			</td>
+		</tr>
+		<!-- CUSTOMER PHONE -->
+		<tr>
+			<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php esc_html_e( 'Phone', 'import-from-hawthorne' ); ?></th>
+			<td style="text-align:left; border: 1px solid #eee;">
+				<?php echo esc_html( ( ! empty( $email_data->customer['phone'] ) ? $email_data->customer['phone'] : '' ) ); ?>
+			</td>
+		</tr>
+		<!-- CUSTOMER MESSAGE -->
+		<tr>
+			<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php esc_html_e( 'Message', 'import-from-hawthorne' ); ?></th>
+			<td style="text-align:left; border: 1px solid #eee;">
+				<?php echo esc_html( ( ! empty( $email_data->customer['message'] ) ? $email_data->customer['message'] : '--' ) ); ?>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<h3><?php esc_html_e( 'Cart items:', 'import-from-hawthorne' ); ?></h3>
+<table cellspacing="0" cellpadding="6" style="width: 100%; border: 1px solid #eee;" bordercolor="#eee">
+	<tbody>
+		<!-- ITERATE THROUGH THE CART ITEMS -->
+		<?php
+		if ( ! empty( $email_data->cart ) && is_array( $email_data->cart ) ) {
+			foreach ( $email_data->cart as $cart_item ) {
+				?>
+				<tr>
+					<th scope="row" style="text-align:left; border: 1px solid #eee;">
+						<img width="20%" src="<?php echo esc_url( ( ! empty( $cart_item['image'] ) ? $cart_item['image'] : '' ) ); ?>" />
+						<a title="<?php echo esc_html( ( ! empty( $cart_item['name'] ) ? $cart_item['name'] : '' ) ); ?>" href="<?php echo esc_url( ( ! empty( $cart_item['link'] ) ? $cart_item['link'] : '' ) ); ?>" target="_blank">
+							<?php echo esc_html( ( ! empty( $cart_item['name'] ) ? $cart_item['name'] : '' ) ); ?>
+						</a>
+					</th>
+					<td style="text-align:left; border: 1px solid #eee;">
+						<?php
+						// Print the product ID.
+						if ( ! empty( $cart_item['id'] ) ) {
+							/* translators: 1: %s: product ID */
+							echo wp_kses_post( '<p>' . sprintf( __( 'ID: %1$s', 'import-from-hawthorne' ), ( ! empty( $cart_item['id'] ) ? $cart_item['id'] : '' ) ) . '</p>' );
+						}
+
+						// Print the product quantity.
+						if ( ! empty( $cart_item['quantity'] ) ) {
+							/* translators: 1: %s: product quantity */
+							echo wp_kses_post( '<p>' . sprintf( __( 'Quantity: %1$s', 'import-from-hawthorne' ), ( ! empty( $cart_item['quantity'] ) ? $cart_item['quantity'] : '' ) ) . '</p>' );
+						}
+
+						// Print the product subtotal.
+						if ( ! empty( $cart_item['subtotal'] ) ) {
+							/* translators: 1: %s: product subtotal */
+							echo wp_kses_post( '<p>' . sprintf( __( 'Subtotal: %1$s', 'import-from-hawthorne' ), wc_price( ( ! empty( $cart_item['subtotal'] ) ? $cart_item['subtotal'] : 0 ) ) ) . '</p>' );
+						}
+						?>
+					</td>
+				</tr>
+				<?php
+			}
+		}
+		?>
 	</tbody>
 </table>
 <p><?php esc_html_e( 'This is a system generated email. Please DO NOT respond to it.', 'easy-reservations' ); ?></p>

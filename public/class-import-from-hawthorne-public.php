@@ -79,10 +79,10 @@ class Import_From_Hawthorne_Public {
 				'notification_error_heading'        => __( 'Error', 'import-from-hawthorne' ),
 				'notification_success_heading'      => __( 'Success', 'import-from-hawthorne' ),
 				'notification_notice_heading'       => __( 'Notice', 'import-from-hawthorne' ),
-				'secd_cart_customer_name_required'  => __( 'Name is required.', 'import-from-hawthorne' ),
-				'secd_cart_customer_email_required' => __( 'Email is required.', 'import-from-hawthorne' ),
-				'secd_cart_customer_email_invalid'  => __( 'Email is invalid.', 'import-from-hawthorne' ),
-				'secd_cart_customer_phone_required' => __( 'Phone is required.', 'import-from-hawthorne' ),
+				'send_cart_customer_name_required'  => __( 'Name is required.', 'import-from-hawthorne' ),
+				'send_cart_customer_email_required' => __( 'Email is required.', 'import-from-hawthorne' ),
+				'send_cart_customer_email_invalid'  => __( 'Email is invalid.', 'import-from-hawthorne' ),
+				'send_cart_customer_phone_required' => __( 'Phone is required.', 'import-from-hawthorne' ),
 				'send_cart_error_message'           => __( 'There is some issue sending the cart. Please see the errors above and try again.', 'import-from-hawthorne' ),
 			)
 		);
@@ -97,7 +97,41 @@ class Import_From_Hawthorne_Public {
 		// Register product brand taxonomy.
 		hawthorne_register_product_brand_taxonomy();
 
-		// do_action( 'shoot_cart_to_greenlight_email', array() );
+		$customer_details = array(
+			'name' => 'Adarsh Verma',
+			'email' => 'adarsh.srmcem@gmail.com',
+			'phone' => '07318216218',
+			'message' => 'How soon can I receive these items?',
+		);
+
+		$cart_items = array(
+			array(
+				'id' => 18688,
+				'name' => 'High-Tech 200 Cup Shredder (5Lb)',
+				'image' => 'http://localhost:10023/wp-content/uploads/2021/06/high-tech-200-1.png',
+				'quantity' => 3,
+				'link' => 'http://localhost:10023/product/high-tech-200-cup-shredder-5lb/',
+				'subtotal' => 15900,
+			),
+			array(
+				'id' => 18690,
+				'name' => 'High-Tech 230 Cup Shredder (7Lb)',
+				'image' => 'http://localhost:10023/wp-content/uploads/2021/06/high-tech-230.png',
+				'quantity' => 4,
+				'link' => 'http://localhost:10023/product/high-tech-230-cup-shredder-7lb/',
+				'subtotal' => 24000,
+			),
+			array(
+				'id' => 22017,
+				'name' => 'DOSATRON D40MZ2 40 GPM 1:500-1:50',
+				'image' => 'http://localhost:10023/wp-content/uploads/2021/05/NoImage.png',
+				'quantity' => 1,
+				'link' => 'http://localhost:10023/product/dosatron-d40mz2-40-gpm-1500-150/',
+				'subtotal' => 803.97,
+			),
+		);
+
+		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items );
 	}
 
 	/**
@@ -152,8 +186,36 @@ class Import_From_Hawthorne_Public {
 
 		// Get the cart contents now.
 		$cart_contents = WC()->cart->get_cart_contents();
+		$cart_items    = array();
 
-		debug( $cart_contents ); die;
+		// If the cart content is available, iterate the items to prepare the array.
+		if ( ! empty( $cart_contents ) && is_array( $cart_contents ) ) {
+			foreach ( $cart_contents as $cart_item ) {
+				$cart_item_product_id   = ( ! empty( $cart_item['product_id'] ) && 0 !== $cart_item['product_id'] ) ? $cart_item['product_id'] : 0;
+				$cart_item_variation_id = ( ! empty( $cart_item['variation_id'] ) && 0 !== $cart_item['variation_id'] ) ? $cart_item['variation_id'] : 0;
+				$product_id             = ( 0 === $cart_item_variation_id ) ? $cart_item_product_id : $cart_item_variation_id;
+				$product_image_id       = get_post_thumbnail_id( $product_id );
+				$cart_items[] = array(
+					'id'       => $product_id,
+					'name'     => get_the_title( $product_id ),
+					'image'    => hawthorne_get_attachment_url_from_attachment_id( $product_image_id ),
+					'quantity' => ( ! empty( $cart_item['quantity'] ) && 0 !== $cart_item['quantity'] ) ? $cart_item['quantity'] : 0,
+					'link'     => get_permalink( $product_id ),
+					'subtotal' => ( ! empty( $cart_item['line_subtotal'] ) && 0 !== $cart_item['line_subtotal'] ) ? $cart_item['line_subtotal'] : 0,
+				);
+			}
+		}
+
+		/**
+		 * Send the email now.
+		 *
+		 * This hook is declared for sending the cart items to greenlight.
+		 *
+		 * @param array $customer_details Customer details array.
+		 * @param array $cart_items Cart items array.
+		 * @since 1.0.0
+		 */
+		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items );
 
 		// Send the response.
 		wp_send_json_success(

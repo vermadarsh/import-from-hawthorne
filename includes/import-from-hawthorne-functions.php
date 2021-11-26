@@ -583,3 +583,19 @@ if ( ! function_exists( 'hawthorne_get_image_data' ) ) {
 		return wp_remote_retrieve_body( $response );
 	}
 }
+
+/**
+ * Check if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_get_attachment_url_from_attachment_id' ) ) {
+	/**
+	 * Returns the image URL by attachment ID.
+	 *
+	 * @param int $image_id Holds the attachment ID.
+	 * @return string
+	 */
+	function hawthorne_get_attachment_url_from_attachment_id( $image_id ) {
+
+		return ( empty( $image_id ) ) ? wc_placeholder_img_src() : wp_get_attachment_url( $image_id );
+	}
+}

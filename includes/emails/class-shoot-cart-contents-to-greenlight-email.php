@@ -42,7 +42,7 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 		$this->template_html  = 'shoot-cart-contents-html.php';
 		$this->template_plain = 'plain/shoot-cart-contents-plain.php';
 
-		add_action( 'hawthorne_shoot_cart_to_greenlight_email_callback_notification', array( $this, 'hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback' ), 20 );
+		add_action( 'hawthorne_shoot_cart_to_greenlight_email_callback_notification', array( $this, 'hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback' ), 20, 2 );
 
 		// Call parent constructor.
 		parent::__construct();
@@ -57,13 +57,13 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	/**
 	 * This callback helps fire the email notification.
 	 *
-	 * @param int      $order_id WooCommerce order id.
-	 * @param WC_Order $wc_order WooCommerce order.
+	 * @param array $customer_details Customer details.
+	 * @param array $cart_items Cart items.
 	 * @since 1.0.0
 	 */
-	public function hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback( $cart_contents ) {
+	public function hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback( $customer_details, $cart_items ) {
 		// Email data object.
-		$this->object = $this->create_object( $cart_contents );
+		$this->object = $this->create_object( $customer_details, $cart_items );
 
 		echo $this->get_content();
 		die;
@@ -81,16 +81,18 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	/**
 	 * Create the data object that will be used in the template.
 	 *
-	 * @param array $cart_contents WooCommerce cart contents.
+	 * @param array $customer_details Customer details.
+	 * @param array $cart_items Cart items.
 	 * @return stdClass
 	 * @since 1.0.0
 	 */
-	public static function create_object( $cart_contents ) {
+	public static function create_object( $customer_details, $cart_items ) {
 		global $wpdb;
 		$cart_object = new stdClass();
 
-		// WooCommerce Order ID.
-		$cart_object->cart_contents = $cart_contents;
+		// Set the cart object.
+		$cart_object->cart     = $cart_items; // WooCommerce cart contents.
+		$cart_object->customer = $customer_details; // Requesting customer details.
 
 		/**
 		 * This filter is fired when sending cart contents email to the store owner.
@@ -101,7 +103,7 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 		 * @return stdClass
 		 * @since 1.0.0
 		 */
-		return apply_filters( 'ersrv_rental_agreement_email_order_object', $cart_object );
+		return apply_filters( 'hawthorne_cart_object', $cart_object );
 	}
 
 	/**
@@ -115,7 +117,7 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 		wc_get_template(
 			$this->template_html,
 			array(
-				'item_data'     => $this->object,
+				'email_data'     => $this->object,
 				'email_heading' => $this->get_heading()
 			),
 			'',

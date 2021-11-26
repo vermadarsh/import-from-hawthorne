@@ -287,7 +287,7 @@ a.close.disabled {
 .form-row .form-group input{
     width: 100%;
 }
-.form-row .form-group span.ersrv-reservation-error:empty{
+.form-row .form-group span.hawthorne-reservation-error:empty{
     display: none;
 }
 .col-12,.col-md-6{
@@ -316,3 +316,138 @@ a.close.disabled {
 .text-right{
     text-align: right !important;
 }
+
+/* Toast CSS */
+.hawthorne-notification-wrapper {
+    padding: 1rem;
+    left: 0px;
+    bottom: 40px !important;
+    pointer-events: none;
+}
+
+.hawthorne-notification {
+    border: 1px solid transparent;
+    transform: translateY(100px);
+    transition: 0.3s ease-in-out;
+    transform-origin: bottom;
+    pointer-events: auto;
+    z-index: 99999;
+}
+
+.hawthorne-notification.toast.hide {
+    display: block;
+}
+
+.hawthorne-notification.fade:not(.show),
+.hawthorne-notification.toast:not(.hide) {
+    transform: translateY(0px);
+    transform-origin: top;
+}
+
+.hawthorne-notification.bg-success *,
+.hawthorne-notification.bg-danger * {
+    color: #fff;
+}
+
+.hawthorne-notification.bg-warning * {
+    color: #000;
+}
+
+.hawthorne-notification .close {
+    background-color: transparent !important;
+}
+
+.hawthorne-notification a {
+    text-decoration: underline;
+}
+
+.position-fixed {
+    position: fixed;
+}
+
+.hawthorne-notification-wrapper .toast {
+    margin: 0px auto;
+}
+
+.hawthorne-notification-wrapper .toast .mr-2 {
+    margin-right: 0.5rem;
+}
+
+.toast {
+    max-width: 350px;
+    overflow: hidden;
+    font-size: 0.875rem;
+    background-color: rgba(255, 255, 255, 0.85);
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    border-radius: 0.25rem;
+}
+
+.toast:not(:last-child) {
+    margin-bottom: 0.75rem;
+}
+
+.toast .close {
+    margin-left: auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: normal;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    border: 1px solid transparent;
+    pointer-events: auto;
+    cursor: pointer;
+    padding: 0rem 0.5rem;
+}
+
+.toast .close:not(:disabled):not(.disabled):focus,
+.toast .close:not(:disabled):not(.disabled):hover {
+    opacity: 0.75;
+}
+
+.toast.showing {
+    opacity: 1;
+}
+
+.toast.hide {
+    display: none;
+}
+
+.toast.show {
+    display: block;
+    opacity: 1;
+}
+
+
+.toast-header {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    color: #6c757d;
+    background-color: transparent;
+    background-clip: padding-box;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.toast-body {
+    padding: 0.75rem;
+}
+
+.bg-success {
+    background-color: #28a745 !important
+}
+
+.bg-warning {
+    background-color: #ffc107 !important
+}
+
+.bg-danger {
+    background-color: #dc3545 !important
+}
+
+/* end here */

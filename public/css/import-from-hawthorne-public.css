@@ -46,9 +46,9 @@
         transition: none
     }
 }
-.modal.show {
+/* .modal.show {
     display: block;
-}
+} */
 .modal.show .modal-dialog {
     -webkit-transform: none;
     transform: none
@@ -299,4 +299,11 @@ a.close.disabled {
         flex: 0 0 50%;
         max-width: 50%;
     }
+}
+.modal.fade {
+    opacity: 0
+}
+
+.modal.fade.show {
+    opacity: 1
 }

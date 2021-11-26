@@ -61,8 +61,8 @@ do_action( 'woocommerce_email_header', $email_heading );
 			foreach ( $email_data->cart as $cart_item ) {
 				?>
 				<tr>
-					<th scope="row" style="text-align:left; border: 1px solid #eee;">
-						<img width="20%" src="<?php echo esc_url( ( ! empty( $cart_item['image'] ) ? $cart_item['image'] : '' ) ); ?>" />
+					<th scope="row" style="text-align:left; border: 1px solid #eee;width:calc(100% / 2);white-space: normal;">
+						<p><img style="max-width: 64px; height: 64px; object-fit: contain;" src="<?php echo esc_url( ( ! empty( $cart_item['image'] ) ? $cart_item['image'] : '' ) ); ?>" /></p>
 						<a title="<?php echo esc_html( ( ! empty( $cart_item['name'] ) ? $cart_item['name'] : '' ) ); ?>" href="<?php echo esc_url( ( ! empty( $cart_item['link'] ) ? $cart_item['link'] : '' ) ); ?>" target="_blank">
 							<?php echo esc_html( ( ! empty( $cart_item['name'] ) ? $cart_item['name'] : '' ) ); ?>
 						</a>

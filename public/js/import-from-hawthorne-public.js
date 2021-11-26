@@ -105,12 +105,12 @@ jQuery( document ).ready( function( $ ) {
 			success: function ( response ) {
 				// In case of invalid AJAX call.
 				if ( 0 === response ) {
-					console.warn( 'easy reservations: invalid AJAX call' );
+					console.warn( 'import from hawthorne: invalid AJAX call' );
 					return false;
 				}
 
 				// If user already exists.
-				if ( 'request-saved' === response.data.code ) {
+				if ( 'cart-sent' === response.data.code ) {
 					// Unblock the button.
 					unblock_element( this_button );
 
@@ -118,18 +118,17 @@ jQuery( document ).ready( function( $ ) {
 					this_button.html( this_button_text );
 
 					// Show the success toast.
-					ersrv_show_toast( 'bg-success', 'fa-check-circle', toast_success_heading, response.data.toast_message );
+					hawthorne_show_notification( 'bg-success', 'fa-check-circle', notification_success_heading, response.data.toast_message );
 
 					// Vacate all the values in the modal.
 					$( '#customer-name' ).val( '' );
 					$( '#customer-email' ).val( '' );
 					$( '#customer-phone' ).val( '' );
-					$( '#customer-query-subject' ).val( '' );
 					$( '#customer-message' ).val( '' );
 
 					// Close the modal.
 					setTimeout( function() {
-						$( '#ersrv-modal' ).hide();
+						$( '#hawthorne-shoot-cart-contents-modal .close' ).click();
 					}, 2000 );
 				}
 			}

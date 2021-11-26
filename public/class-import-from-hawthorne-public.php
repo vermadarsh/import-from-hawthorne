@@ -115,4 +115,41 @@ class Import_From_Hawthorne_Public {
 			require_once HAWTHORNE_PLUGIN_PATH . 'public/templates/modals/notification.php';
 		}
 	}
+
+	/**
+	 * AJAX to send cart details to Greenlight.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_send_cart_callback() {
+		$action = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING );
+
+		// Exit, if the action mismatches.
+		if ( empty( $action ) || 'send_cart' !== $action ) {
+			echo esc_html( 0 );
+			wp_die();
+		}
+
+		// Gather the customer details.
+		$customer_details = array(
+			'name'    => filter_input( INPUT_POST, 'customer_name', FILTER_SANITIZE_STRING ),
+			'email'   => filter_input( INPUT_POST, 'customer_email', FILTER_SANITIZE_STRING ),
+			'phone'   => filter_input( INPUT_POST, 'customer_phone', FILTER_SANITIZE_STRING ),
+			'message' => filter_input( INPUT_POST, 'customer_message', FILTER_SANITIZE_STRING ),
+		);
+
+		// Get the cart contents now.
+		$cart_contents = WC()->cart->get_cart_contents();
+
+		debug( $cart_contents ); die;
+
+		// Send the response.
+		wp_send_json_success(
+			array(
+				'code'          => 'cart-sent',
+				'toast_message' => __( 'Cart has been sent successfully to Greenlight!', 'import-from-hawthorne' ),
+			)
+		);
+		wp_die();
+	}
 }

@@ -184,6 +184,11 @@ class Import_From_Hawthorne_Admin {
 		$this->plugin_settings_tabs['test-api'] = __( 'Test API', 'import-from-hawthorne' );
 		register_setting( 'test-api', 'test-api' );
 		add_settings_section( 'tab-test-api', ' ', array( &$this, 'hawthorne_plugin_api_connection_settings_callback' ), 'test-api' );
+
+		// Send cart settings.
+		$this->plugin_settings_tabs['send-cart'] = __( 'Send Cart', 'import-from-hawthorne' );
+		register_setting( 'send-cart', 'send-cart' );
+		add_settings_section( 'tab-send-cart', ' ', array( &$this, 'hawthorne_plugin_send_cart_settings_callback' ), 'send-cart' );
 	}
 
 	/**
@@ -202,6 +207,15 @@ class Import_From_Hawthorne_Admin {
 	 */
 	public function hawthorne_plugin_api_connection_settings_callback() {
 		include_once 'templates/settings/api-connection.php'; // Include the API connection settings template.
+	}
+
+	/**
+	 * Plugin send cart settings template.
+	 *
+	 * @param 1.0.0
+	 */
+	public function hawthorne_plugin_send_cart_settings_callback() {
+		include_once 'templates/settings/send-cart.php'; // Include the API connection settings template.
 	}
 
 	/**

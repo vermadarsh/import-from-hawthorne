@@ -22,6 +22,15 @@ jQuery( document ).ready( function( $ ) {
 	} );
 
 	/**
+	 * Close the modal on Escape key press.
+	 */
+	$( document ).on( 'keyup', function( evt ) {
+		if ( 27 === evt.keyCode ) {
+			$( '#hawthorne-shoot-cart-contents-modal .close' ).click();
+		}
+	} );
+
+	/**
 	 * Send cart to greenlight.
 	 */
 	$( document ).on( 'click', '.hawthorne-send-cart-to-greenlight', function() {
@@ -70,13 +79,11 @@ jQuery( document ).ready( function( $ ) {
 
 		// Send the AJAX now.
 		var data = {
-			action: 'submit_contact_owner_request',
-			name: name,
-			email: email,
-			phone: phone,
-			subject: subject,
-			message: message,
-			item_id: item_id,
+			action: 'send_cart',
+			customer_name: customer_name,
+			customer_email: customer_email,
+			customer_phone: customer_phone,
+			customer_message: customer_message,
 		};
 
 		$.ajax( {
@@ -139,5 +146,23 @@ jQuery( document ).ready( function( $ ) {
 		var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
 		return ( ! regex.test( email ) ) ? -1 : 1;
+	}
+
+	/**
+	 * Block element.
+	 *
+	 * @param {string} element
+	 */
+	function block_element(element) {
+		element.addClass('non-clickable');
+	}
+
+	/**
+	 * Unblock element.
+	 *
+	 * @param {string} element
+	 */
+	function unblock_element(element) {
+		element.removeClass('non-clickable');
 	}
 } );

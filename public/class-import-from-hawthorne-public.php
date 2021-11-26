@@ -159,7 +159,7 @@ class Import_From_Hawthorne_Public {
 		wp_send_json_success(
 			array(
 				'code'          => 'cart-sent',
-				'toast_message' => hawthorne_get_plugin_settings( 'sent_cart_success_message' );,
+				'toast_message' => hawthorne_get_plugin_settings( 'sent_cart_success_message' ),
 			)
 		);
 		wp_die();

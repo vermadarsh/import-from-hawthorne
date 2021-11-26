@@ -106,10 +106,9 @@ class Import_From_Hawthorne_Public {
 	 * @since 1.0.0
 	 */
 	public function hawthorne_woocommerce_proceed_to_checkout_callback() {
+		$open_send_cart_modal_button_text = hawthorne_get_plugin_settings( 'open_send_cart_modal_button_text' );
 		?>
-		<a href="javascript:void(0);" class="checkout-button button alt wc-forward hawthorne-open-cart-contents-modal">
-			<?php esc_html_e( 'Shoot the mail', 'import-from-hawthorne' ); ?>
-		</a>
+		<a href="javascript:void(0);" class="checkout-button button alt wc-forward hawthorne-open-cart-contents-modal"><?php echo wp_kses_post( $open_send_cart_modal_button_text ); ?></a>
 		<?php
 	}
 
@@ -160,7 +159,7 @@ class Import_From_Hawthorne_Public {
 		wp_send_json_success(
 			array(
 				'code'          => 'cart-sent',
-				'toast_message' => __( 'Cart has been sent successfully to Greenlight!', 'import-from-hawthorne' ),
+				'toast_message' => hawthorne_get_plugin_settings( 'sent_cart_success_message' );,
 			)
 		);
 		wp_die();

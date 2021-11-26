@@ -79,6 +79,18 @@ if ( ! function_exists( 'hawthorne_get_plugin_settings' ) ) {
 				$data = ( ! empty( $plugin_settings['products_endpoint'] ) ) ? $plugin_settings['products_endpoint'] : '';
 				break;
 
+			case 'open_send_cart_modal_button_text':
+				$data = ( ! empty( $plugin_settings['open_send_cart_modal_button_text'] ) ) ? $plugin_settings['open_send_cart_modal_button_text'] : __( 'Send Cart to Greenlight', 'import-from-hawthorne' );
+				break;
+
+			case 'sent_cart_success_message':
+				$data = ( ! empty( $plugin_settings['sent_cart_success_message'] ) ) ? $plugin_settings['sent_cart_success_message'] : __( 'Cart is sent successfully !!', 'import-from-hawthorne' );
+				break;
+
+			case 'clear_cart':
+				$data = ( ! empty( $plugin_settings['clear_cart'] ) ) ? $plugin_settings['clear_cart'] : '';
+				break;
+
 			default:
 				$data = -1;
 		}

@@ -16,16 +16,17 @@ if ( ! is_null( $update_plugin_settings ) ) {
 	$api_secret_key    = filter_input( INPUT_POST, 'api-secret-key', FILTER_SANITIZE_STRING );
 	$products_endpoint = filter_input( INPUT_POST, 'products-endpoint', FILTER_SANITIZE_STRING );
 
+	// Get the settings.
+	$plugin_settings = get_option( 'hawthorne_integration_plugin_settings' );
+	$plugin_settings = ( empty( $plugin_settings ) ) ? array() : $plugin_settings;
+
+	// Add send cart settings to the settings array.
+	$plugin_settings['api_key']           = $api_key;
+	$plugin_settings['api_secret_key']    = $api_secret_key;
+	$plugin_settings['products_endpoint'] = $products_endpoint;
+
 	// Array for the settings.
-	update_option(
-		'hawthorne_integration_plugin_settings',
-		array(
-			'api_key'           => $api_key,
-			'api_secret_key'    => $api_secret_key,
-			'products_endpoint' => $products_endpoint,
-		),
-		false
-	);
+	update_option( 'hawthorne_integration_plugin_settings', $plugin_settings, false );
 
 	// Print the success message.
 	?>

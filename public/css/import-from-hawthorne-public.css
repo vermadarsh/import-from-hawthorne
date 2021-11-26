@@ -343,6 +343,7 @@ a.close.disabled {
 .hawthorne-notification.toast:not(.hide) {
     transform: translateY(0px);
     transform-origin: top;
+    pointer-events: none;
 }
 
 .hawthorne-notification.bg-success *,

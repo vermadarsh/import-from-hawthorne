@@ -65,9 +65,6 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 		// Email data object.
 		$this->object = $this->create_object( $customer_details, $cart_items );
 
-		echo $this->get_content();
-		die;
-
 		// Fire the notification now.
 		$this->send(
 			$this->get_recipient(),

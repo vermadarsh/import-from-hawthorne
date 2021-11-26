@@ -217,6 +217,12 @@ class Import_From_Hawthorne_Public {
 		 */
 		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items );
 
+		// Clear cart if required.
+		$clear_cart = hawthorne_get_plugin_settings( 'clear_cart' );
+		if ( ! empty( $clear_cart ) && 'yes' === $clear_cart ) {
+			WC()->cart->empty_cart();
+		}
+
 		// Send the response.
 		wp_send_json_success(
 			array(

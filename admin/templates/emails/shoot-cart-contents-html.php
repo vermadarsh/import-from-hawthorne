@@ -96,12 +96,6 @@ do_action( 'woocommerce_email_header', $email_heading );
 	</tbody>
 </table>
 <p><?php esc_html_e( 'This is a system generated email. Please DO NOT respond to it.', 'easy-reservations' ); ?></p>
-<p>
-	<?php
-	/* translators: 1: %s: order view URL */
-	echo wp_kses_post( make_clickable( sprintf( __( 'You can view this order in the dashboard here: %s', 'easy-reservations' ), $view_order_url ) ) );
-	?>
-</p>
 <?php
 /**
  * This hook runs on the custom email footers.

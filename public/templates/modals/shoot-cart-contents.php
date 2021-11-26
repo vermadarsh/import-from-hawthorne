@@ -19,20 +19,14 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <input type="email" id="contact-owner-customer-email" class="form-control" placeholder="Your Email">
-                                <span class="ersrv-reservation-error contact-owner-customer-email"></span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="form-group">
                                 <input type="text" id="contact-owner-customer-phone" class="form-control" placeholder="Your Phone Number">
                                 <span class="ersrv-reservation-error contact-owner-customer-phone"></span>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-12">
                             <div class="form-group">
-                                <input type="text" id="contact-owner-customer-query-subject" class="form-control" placeholder="Query Subject">
-                                <span class="ersrv-reservation-error contact-owner-customer-query-subject"></span>
+                                <input type="email" id="contact-owner-customer-email" class="form-control" placeholder="Your Email">
+                                <span class="ersrv-reservation-error contact-owner-customer-email"></span>
                             </div>
                         </div>
                         <div class="col-12">

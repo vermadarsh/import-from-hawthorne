@@ -284,6 +284,12 @@ a.close.disabled {
 .form-row .form-group{
     margin-bottom: 1rem;
 }
+.form-row .form-group input{
+    width: 100%;
+}
+.form-row .form-group span.ersrv-reservation-error:empty{
+    display: none;
+}
 .col-12,.col-md-6{
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
@@ -306,4 +312,7 @@ a.close.disabled {
 
 .modal.fade.show {
     opacity: 1
+}
+.text-right{
+    text-align: right !important;
 }

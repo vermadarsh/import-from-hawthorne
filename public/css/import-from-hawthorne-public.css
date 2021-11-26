@@ -323,6 +323,7 @@ a.close.disabled {
     left: 0px;
     bottom: 40px !important;
     pointer-events: none;
+    z-index: 9999 !important;
 }
 
 .hawthorne-notification {

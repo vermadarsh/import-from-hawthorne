@@ -47,6 +47,11 @@ class Import_From_Hawthorne_Public {
 	 * @since    1.0.0
 	 */
 	public function hawthorne_wp_enqueue_scripts_callback() {
+		// Return if it's not the cart page.
+		if ( ! is_cart() ) {
+			return;
+		}
+		
 		// Custom public style.
 		wp_enqueue_style(
 			$this->plugin_name,
@@ -70,7 +75,15 @@ class Import_From_Hawthorne_Public {
 			$this->plugin_name,
 			'Hawthorne_Public_Script_Vars',
 			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'ajaxurl'                           => admin_url( 'admin-ajax.php' ),
+				'notification_error_heading'        => __( 'Error', 'import-from-hawthorne' ),
+				'notification_success_heading'      => __( 'Success', 'import-from-hawthorne' ),
+				'notification_notice_heading'       => __( 'Notice', 'import-from-hawthorne' ),
+				'secd_cart_customer_name_required'  => __( 'Name is required.', 'import-from-hawthorne' ),
+				'secd_cart_customer_email_required' => __( 'Email is required.', 'import-from-hawthorne' ),
+				'secd_cart_customer_email_invalid'  => __( 'Email is invalid.', 'import-from-hawthorne' ),
+				'secd_cart_customer_phone_required' => __( 'Phone is required.', 'import-from-hawthorne' ),
+				'send_cart_error_message'           => __( 'There is some issue sending the cart. Please see the errors above and try again.', 'import-from-hawthorne' ),
 			)
 		);
 	}

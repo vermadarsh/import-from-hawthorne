@@ -1,6 +1,17 @@
 jQuery( document ).ready( function( $ ) {
 	'use strict';
 
+	// Localized variables.
+	var ajaxurl                          = Hawthorne_Public_Script_Vars.ajaxurl;
+	var notification_error_heading        = Hawthorne_Public_Script_Vars.notification_error_heading;
+	var notification_success_heading      = Hawthorne_Public_Script_Vars.notification_success_heading;
+	var notification_notice_heading       = Hawthorne_Public_Script_Vars.notification_notice_heading;
+	var send_cart_customer_name_required  = Hawthorne_Public_Script_Vars.send_cart_customer_name_required;
+	var send_cart_customer_email_required = Hawthorne_Public_Script_Vars.send_cart_customer_email_required;
+	var send_cart_customer_email_invalid  = Hawthorne_Public_Script_Vars.send_cart_customer_email_invalid;
+	var send_cart_customer_phone_required = Hawthorne_Public_Script_Vars.send_cart_customer_phone_required;
+	var send_cart_error_message           = Hawthorne_Public_Script_Vars.send_cart_error_message;
+
 	/**
 	 * Open the cart contents modal.
 	 */
@@ -46,28 +57,28 @@ jQuery( document ).ready( function( $ ) {
 
 		// Validate the customer name.
 		if ( -1 === is_valid_string( customer_name ) ) {
-			$( '.hawthorne-send-cart-error.customer-name' ).text( 'Name is required.' );
+			$( '.hawthorne-send-cart-error.customer-name' ).text( send_cart_customer_name_required );
 			send_cart = false;
 		}
 
 		// Validate email.
 		if ( -1 === is_valid_string( customer_email ) ) {
-			$( '.hawthorne-send-cart-error.customer-email' ).text( 'Email is required.' );
+			$( '.hawthorne-send-cart-error.customer-email' ).text( send_cart_customer_email_required );
 			send_cart = false;
 		} else if ( -1 === is_valid_email( customer_email ) ) {
-			$( '.hawthorne-send-cart-error.customer-email' ).text( 'Email is invalid.' );
+			$( '.hawthorne-send-cart-error.customer-email' ).text( send_cart_customer_email_invalid );
 			send_cart = false;
 		}
 
 		// Validate the phone.
 		if ( '' === customer_phone ) {
-			$( '.hawthorne-send-cart-error.customer-phone' ).text( 'Phone is required.' );
+			$( '.hawthorne-send-cart-error.customer-phone' ).text( send_cart_customer_phone_required );
 			send_cart = false;
 		}
 
 		// Exit, if user registration is set to false.
 		if ( false === send_cart ) {
-			// ersrv_show_toast( 'bg-danger', 'fa-skull-crossbones', toast_error_heading, reservation_item_contact_owner_error_message );
+			hawthorne_show_notification( 'bg-danger', 'fa-skull-crossbones', notification_error_heading, send_cart_error_message );
 			return false;
 		}
 
@@ -164,5 +175,27 @@ jQuery( document ).ready( function( $ ) {
 	 */
 	function unblock_element(element) {
 		element.removeClass('non-clickable');
+	}
+
+	/**
+	 * Show the notification text.
+	 *
+	 * @param {string} bg_color Holds the toast background color.
+	 * @param {string} icon Holds the toast icon.
+	 * @param {string} heading Holds the toast heading.
+	 * @param {string} message Holds the toast body message.
+	 */
+	function hawthorne_show_notification( bg_color, icon, heading, message ) {
+		$( '.hawthorne-notification-wrapper .toast' ).removeClass( 'bg-success bg-warning bg-danger' );
+		$( '.hawthorne-notification-wrapper .toast' ).addClass( bg_color );
+		$( '.hawthorne-notification-wrapper .toast .hawthorne-notification-icon' ).removeClass( 'fa-skull-crossbones fa-check-circle fa-exclamation-circle' );
+		$( '.hawthorne-notification-wrapper .toast .hawthorne-notification-icon' ).addClass( icon );
+		$( '.hawthorne-notification-wrapper .toast .hawthorne-notification-heading' ).text( heading );
+		$( '.hawthorne-notification-wrapper .toast .hawthorne-notification-message' ).html( message );
+		$( '.hawthorne-notification-wrapper .toast' ).removeClass( 'hide' ).addClass( 'show' );
+
+		setTimeout( function() {
+			$( '.hawthorne-notification-wrapper .toast' ).removeClass( 'show' ).addClass( 'hide' );
+		}, 5000 );
 	}
 } );

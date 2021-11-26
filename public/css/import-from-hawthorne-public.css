@@ -411,7 +411,10 @@ a.close.disabled {
 .toast .close:not(:disabled):not(.disabled):hover {
     opacity: 0.75;
 }
-
+.toast a,
+.toast button{
+    pointer-events: auto;
+}
 .toast.showing {
     opacity: 1;
 }

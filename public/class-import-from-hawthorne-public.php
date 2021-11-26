@@ -110,6 +110,9 @@ class Import_From_Hawthorne_Public {
 		if ( is_cart() ) {
 			// Include the cart contents email modal.
 			require_once HAWTHORNE_PLUGIN_PATH . 'public/templates/modals/shoot-cart-contents.php';
+
+			// Include the notification html.
+			require_once HAWTHORNE_PLUGIN_PATH . 'public/templates/modals/notification.php';
 		}
 	}
 }

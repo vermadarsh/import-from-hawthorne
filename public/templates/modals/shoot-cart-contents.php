@@ -1,9 +1,9 @@
 <!-- add show class in ! class="modal fade show" !  like this  but css se display block kerwana smooth transition ke loiye...-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
+<div class="modal fade" id="hawthorne-shoot-cart-contents-modal" tabindex="-1" aria-labelledby="hawthorne-shoot-cart-contents-modal-label" aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLabel">Contact Owner</h4>
+                <h4 class="modal-title" id="hawthorne-shoot-cart-contents-modal-label">Contact Owner</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -47,9 +47,5 @@
                     </div>
                 </form>
             </div>
-            <!-- <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div> -->
         </div>
     </div>

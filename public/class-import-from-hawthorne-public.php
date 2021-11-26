@@ -94,7 +94,7 @@ class Import_From_Hawthorne_Public {
 	 */
 	public function hawthorne_woocommerce_proceed_to_checkout_callback() {
 		?>
-		<a href="javascript:void(0);" class="checkout-button button alt wc-forward">
+		<a href="javascript:void(0);" class="checkout-button button alt wc-forward hawthorne-open-cart-contents-modal">
 			<?php esc_html_e( 'Shoot the mail', 'import-from-hawthorne' ); ?>
 		</a>
 		<?php

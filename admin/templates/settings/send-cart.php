@@ -55,7 +55,7 @@ $clear_cart                       = hawthorne_get_plugin_settings( 'clear_cart' 
 		<tr>
 			<th scope="row"><label for="sent-cart-success-message"><?php esc_html_e( 'Success Message after Cart is Sent', 'import-from-hawthorne' ); ?></label></th>
 			<td>
-				<input type="text" id="sent-cart-success-message" name="sent-cart-success-message" placeholder="<?php esc_html_e( 'Default: Cart is sent successfully !!', 'import-from-hawthorne' ); ?>" class="regular-text" value="<?php echo esc_html( $sent_cart_success_message ); ?>">
+				<textarea rows="4" id="sent-cart-success-message" name="sent-cart-success-message" placeholder="<?php esc_html_e( 'Default: Cart is sent successfully !!', 'import-from-hawthorne' ); ?>" class="regular-text"><?php echo esc_html( $sent_cart_success_message ); ?></textarea>
 				<p class="description"><?php esc_html_e( 'Success message that is shown when the cart is successfully sent.', 'import-from-hawthorne' ); ?></p>
 			</td>
 		</tr>

@@ -1,3 +1,14 @@
+<?php
+/**
+ * This file is used for templating the notification template.
+ *
+ * @since 1.0.0
+ * @package Import_From_Hawthorne
+ * @subpackage Import_From_Hawthorne/public/templates/modals
+ */
+
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+?>
 <div class="position-fixed hawthorne-notification-wrapper p-3" style="z-index: 5; right: 0; bottom: 0;">
 	<!-- 
 		classes for Bg color

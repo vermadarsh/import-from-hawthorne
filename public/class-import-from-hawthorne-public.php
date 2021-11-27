@@ -96,42 +96,6 @@ class Import_From_Hawthorne_Public {
 	public function hawthorne_init_callback() {
 		// Register product brand taxonomy.
 		hawthorne_register_product_brand_taxonomy();
-
-		/*$customer_details = array(
-			'name' => 'Adarsh Verma',
-			'email' => 'adarsh.srmcem@gmail.com',
-			'phone' => '07318216218',
-			'message' => 'How soon can I receive these items?',
-		);
-
-		$cart_items = array(
-			array(
-				'id' => 18688,
-				'name' => 'High-Tech 200 Cup Shredder (5Lb)',
-				'image' => 'https://growwithgreenlight.com/wp-content/uploads/2021/06/high-tech-200-1.png',
-				'quantity' => 3,
-				'link' => 'http://localhost:10023/product/high-tech-200-cup-shredder-5lb/',
-				'subtotal' => 15900,
-			),
-			array(
-				'id' => 18690,
-				'name' => 'High-Tech 230 Cup Shredder (7Lb)',
-				'image' => 'https://growwithgreenlight.com/wp-content/uploads/2021/06/high-tech-230.png',
-				'quantity' => 4,
-				'link' => 'http://localhost:10023/product/high-tech-230-cup-shredder-7lb/',
-				'subtotal' => 24000,
-			),
-			array(
-				'id' => 22017,
-				'name' => 'DOSATRON D40MZ2 40 GPM 1:500-1:50',
-				'image' => 'https://growwithgreenlight.com/wp-content/uploads/2021/05/NoImage.png',
-				'quantity' => 1,
-				'link' => 'http://localhost:10023/product/dosatron-d40mz2-40-gpm-1500-150/',
-				'subtotal' => 803.97,
-			),
-		);
-
-		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items );*/
 	}
 
 	/**

@@ -28,12 +28,12 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	public function __construct() {
 		// Email slug we can use to filter other data.
 		$this->id          = 'shoot_cart_contents';
-		$this->title       = __( 'Hawthorne: Shoot Cart Contents', 'import-from-hawthorne' );
+		$this->title       = __( 'Hawthorne: Cart Details', 'import-from-hawthorne' );
 		$this->description = __( 'An email sent to the admin user when they place a cart order.', 'import-from-hawthorne' );
 
 		// For admin area to let the user know we are sending this email to the store owner.
 		$this->customer_email = false;
-		$this->heading        = __( 'Shoot Cart Contents', 'import-from-hawthorne' );
+		$this->heading        = __( 'Cart Details', 'import-from-hawthorne' );
 
 		// translators: placeholder is {blogname}, a variable that will be substituted when email is sent out.
 		$this->subject = sprintf( _x( '[%s] Cart Contents', 'default email subject for rental agreement being sent to the admin', 'import-from-hawthorne' ), '{blogname}' );

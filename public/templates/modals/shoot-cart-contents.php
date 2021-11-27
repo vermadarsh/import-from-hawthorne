@@ -1,3 +1,23 @@
+<?php
+/**
+ * This file is used for templating the send cart template.
+ *
+ * @since 1.0.0
+ * @package Import_From_Hawthorne
+ * @subpackage Import_From_Hawthorne/public/templates/modals
+ */
+
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
+// Get the current customer ID.
+$customer_id         = get_current_user_id();
+$customer            = ( 0 !== $customer_id ) ? new WC_Customer( $customer_id ) : false;
+$customer_first_name = ( false !== $customer ) ? $customer->get_billing_first_name() : '';
+$customer_last_name  = ( false !== $customer ) ? $customer->get_billing_last_name() : '';
+$customer_full_name  = "{$customer_first_name} {$customer_last_name}";
+$customer_phone      = ( false !== $customer ) ? $customer->get_billing_phone() : '';
+$customer_email      = ( false !== $customer ) ? $customer->get_billing_email() : '';
+?>
 <div class="modal fade" id="hawthorne-shoot-cart-contents-modal" tabindex="-1" aria-labelledby="hawthorne-shoot-cart-contents-modal-label" aria-hidden="false">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
@@ -12,19 +32,19 @@
 					<div class="form-row">
 						<div class="col-12 col-md-6">
 							<div class="form-group">
-								<input type="text" id="customer-name" class="form-control" placeholder="<?php esc_html_e( 'Name*', 'import-from-hawthorne' ); ?>">
+								<input type="text" id="customer-name" class="form-control" placeholder="<?php esc_html_e( 'Name*', 'import-from-hawthorne' ); ?>" value="<?php echo esc_html( $customer_full_name ); ?>">
 								<span class="hawthorne-send-cart-error customer-name"></span>
 							</div>
 						</div>
 						<div class="col-12 col-md-6">
 							<div class="form-group">
-								<input type="text" id="customer-phone" class="form-control" placeholder="<?php esc_html_e( 'Phone Number*', 'import-from-hawthorne' ); ?>">
+								<input type="text" id="customer-phone" class="form-control" placeholder="<?php esc_html_e( 'Phone Number*', 'import-from-hawthorne' ); ?>" value="<?php echo esc_html( $customer_phone ); ?>">
 								<span class="hawthorne-send-cart-error customer-phone"></span>
 							</div>
 						</div>
 						<div class="col-12 col-md-12">
 							<div class="form-group">
-								<input type="email" id="customer-email" class="form-control" placeholder="<?php esc_html_e( 'Email*', 'import-from-hawthorne' ); ?>">
+								<input type="email" id="customer-email" class="form-control" placeholder="<?php esc_html_e( 'Email*', 'import-from-hawthorne' ); ?>" value="<?php echo esc_html( $customer_email ); ?>">
 								<span class="hawthorne-send-cart-error customer-email"></span>
 							</div>
 						</div>

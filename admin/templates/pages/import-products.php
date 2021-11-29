@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is used for templating the Hawthorne products import feature.
  *
@@ -8,31 +7,29 @@
  * @subpackage Import_From_Hawthorne/admin/pages
  */
 
-defined('ABSPATH') || exit; // Exit if accessed directly.
-
-// delete_transient( 'hawthorne_product_items' ); die;
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
 // Fetch the products data from the transient.
-$products = get_transient('hawthorne_product_items');
+$products = get_transient( 'hawthorne_product_items' );
 
 // See if there are products in the transient.
-if (false === $products) {
+if ( false === $products ) {
 	$products = hawthorne_fetch_products(); // Shoot the API to get products.
 
 	/**
 	 * Store the response data in a cookie.
 	 * This cookie data will be used to import the products in the database.
 	 */
-	if (false !== $products) {
-		set_transient('hawthorne_product_items', wp_json_encode($products), (60 * 60 * 12));
+	if ( false !== $products ) {
+		set_transient( 'hawthorne_product_items', wp_json_encode( $products ), ( 60 * 60 * 12 ) );
 	}
 } else {
 	// If you're here, the data is already in transients.
-	$products = json_decode($products, true);
+	$products = json_decode( $products, true );
 }
 
 // Get the count of the products.
-$total_products = count($products);
+$total_products = count( $products );
 ?>
 <div class="wrap">
 	<h1><?php esc_html_e('Import Products', 'import-from-hawthorne'); ?></h1>

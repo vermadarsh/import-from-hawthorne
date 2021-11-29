@@ -142,12 +142,14 @@ class Import_From_Hawthorne {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'hawthorne_admin_enqueue_scripts_callback' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'hawthorne_admin_menu_callback' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'hawthorne_plugin_settings_templates_callback' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'hawthorne_admin_init_callback' );
+		// $this->loader->add_action( 'admin_init', $plugin_admin, 'hawthorne_hawthorne_import_products_cron_callback' );
 		$this->loader->add_action( 'wp_ajax_kickoff_products_import', $plugin_admin, 'hawthorne_kickoff_products_import_callback' );
 		$this->loader->add_filter( 'parent_file', $plugin_admin, 'hawthorne_parent_file_callback' );
 		$this->loader->add_action( 'woocommerce_product_options_dimensions', $plugin_admin, 'hawthorne_woocommerce_product_options_dimensions_callback' );
 		$this->loader->add_action( 'woocommerce_product_options_sku', $plugin_admin, 'hawthorne_woocommerce_product_options_sku_callback' );
 		$this->loader->add_action( 'woocommerce_process_product_meta', $plugin_admin, 'hawthorne_woocommerce_process_product_meta_callback' );
+		$this->loader->add_action( 'hawthorne_import_products_cron', $plugin_admin, 'hawthorne_hawthorne_import_products_cron_callback' );
 	}
 
 	/**

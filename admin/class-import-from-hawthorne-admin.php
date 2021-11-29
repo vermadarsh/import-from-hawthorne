@@ -174,7 +174,7 @@ class Import_From_Hawthorne_Admin {
 	 *
 	 * @version 1.0.0
 	 */
-	public function hawthorne_plugin_settings_templates_callback() {
+	public function hawthorne_admin_init_callback() {
 		// General settings.
 		$this->plugin_settings_tabs['settings'] = __( 'Settings', 'import-from-hawthorne' );
 		register_setting( 'settings', 'settings' );
@@ -189,6 +189,13 @@ class Import_From_Hawthorne_Admin {
 		$this->plugin_settings_tabs['send-cart'] = __( 'Send Cart', 'import-from-hawthorne' );
 		register_setting( 'send-cart', 'send-cart' );
 		add_settings_section( 'tab-send-cart', ' ', array( &$this, 'hawthorne_plugin_send_cart_settings_callback' ), 'send-cart' );
+
+		// Redirect to the plugin settings page just as it is activated.
+		if ( get_option( 'hawthorne_do_plugin_activation_redirect' ) ) {
+			delete_option( 'hawthorne_do_plugin_activation_redirect' );
+			wp_safe_redirect( admin_url( 'admin.php?page=hawthorne' ) );
+			exit;
+		}
 	}
 
 	/**
@@ -416,5 +423,73 @@ class Import_From_Hawthorne_Admin {
 		} else {
 			delete_post_meta( $product_id, '_upc' );
 		}
+	}
+
+	/**
+	 * Cron job to import products from Hawthorne and update the database.
+	 */
+	public function hawthorne_hawthorne_import_products_cron_callback() {
+		$products = hawthorne_fetch_products(); // Shoot the API to get products.
+		$products = array_chunk( $products, 50, true ); // Divide the complete data into 50 products.
+		self::hawthorne_import_products( $products, 1 );
+	}
+
+	/**
+	 * Import products when the cron is executed.
+	 *
+	 * @param array $products Products fetched from Hawthorne.
+	 * @param int   $page Page.
+	 * @since 1.0.0
+	 */
+	public static function hawthorne_import_products( $products, $page ) {
+		$chunk_index = $page - 1;
+		$chunk       = ( array_key_exists( $chunk_index, $products ) ) ? $products[ $chunk_index ] : array();
+
+		// Import the chunk, if there are products.
+		if ( ! empty( $chunk ) && is_array( $chunk ) ) {
+			self::hawthorne_import_products_chunk( $products, $chunk, $page );
+		}
+	}
+
+	/**
+	 * Import products chunk.
+	 *
+	 * @param array $products Products fetched from Hawthorne.
+	 * @param array $chunk Products chunk.
+	 * @param int   $page Page.
+	 * @since 1.0.0
+	 */
+	public static function hawthorne_import_products_chunk( $products, $chunk, $page ) {
+		// Return, if the chunk is empty or invalid.
+		if ( empty( $chunk ) || ! is_array( $chunk ) ) {
+			return;
+		}
+
+		// Iterate through the loop to import the products.
+		foreach ( $chunk as $part ) {
+			$part          = (array) $part; // Convert the data type from std class to array.
+			$product_title = ( ! empty( $part['Name'] ) ) ? $part['Name'] : '';
+
+			// Skip the update if the product title is missing.
+			if ( empty( $product_title ) ) {
+				continue;
+			}
+
+			// Check if the product exists with the name.
+			$product_exists = get_page_by_title( $product_title, OBJECT, 'product' );
+
+			// If the product doesn't exist.
+			if ( is_null( $product_exists ) ) {
+				// hawthorne_create_product( $part ); // Create product.
+			} else {
+				// hawthorne_update_product( $product_exists->ID, $part ); // Update product.
+			}
+		}
+
+		// Increase the page value.
+		$page += 1;
+
+		// Call the function again to continue import.
+		self::hawthorne_import_products( $products, $page );
 	}
 }

@@ -38,5 +38,16 @@ class Import_From_Hawthorne_Activator {
 		if ( ! file_exists( $uploads_dir ) ) {
 			mkdir( $uploads_dir, 0755, true );
 		}
+
+		/**
+		 * Setup the cron for importing products from Hawthorne.
+		 * The daily cron is setup.
+		 */
+		if ( ! wp_next_scheduled( 'hawthorne_import_products_cron' ) ) {
+			wp_schedule_event( time(), 'daily', 'hawthorne_import_products_cron' );
+		}
+
+		// Redirect to plugin settings page on the plugin activation.
+		add_option( 'hawthorne_do_plugin_activation_redirect', 1, false );
 	}
 }

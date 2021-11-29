@@ -30,7 +30,9 @@ class Import_From_Hawthorne_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		// Clear the scheduled crons now.
+		if ( wp_next_scheduled( 'hawthorne_import_products_cron' ) ) {
+			wp_clear_scheduled_hook( 'hawthorne_import_products_cron' );
+		}
 	}
-
 }

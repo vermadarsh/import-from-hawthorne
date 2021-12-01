@@ -480,9 +480,9 @@ class Import_From_Hawthorne_Admin {
 
 			// If the product doesn't exist.
 			if ( is_null( $product_exists ) ) {
-				// hawthorne_create_product( $part ); // Create product.
+				hawthorne_create_product( $part ); // Create product.
 			} else {
-				// hawthorne_update_product( $product_exists->ID, $part ); // Update product.
+				hawthorne_update_product( $product_exists->ID, $part ); // Update product.
 			}
 		}
 

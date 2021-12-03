@@ -196,4 +196,71 @@ class Import_From_Hawthorne_Public {
 		);
 		wp_die();
 	}
+
+	/**
+	 * Change the button text - add to cart - product single page.
+	 *
+	 * @param string $button_text Add to cart button text.
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_product_single_add_to_cart_text_callback( $button_text ) {
+		$button_text = hawthorne_get_plugin_settings( 'single_product_add_to_cart_button_text' );
+
+		return $button_text;
+	}
+
+	/**
+	 * Change the button text - add to cart - archive pages.
+	 *
+	 * @param string $button_text Add to cart button text.
+	 * @return string
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_product_add_to_cart_text_callback( $button_text ) {
+		$button_text = hawthorne_get_plugin_settings( 'archive_product_pages_add_to_cart_button_text' );
+
+		return $button_text;
+	}
+
+	/**
+	 * Add custom data received from Hawthorne to the product pages.
+	 *
+	 * @param array      $product_attributes Product attributes array.
+	 * @param WC_Product $product WooCommerce product data object.
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_display_product_attributes_callback( $product_attributes, $product ) {
+		$product_id = $product->get_id(); // Get the product ID.
+		$dim_weight = get_post_meta( $product_id, '_dim_weight', true );
+		$volume     = get_post_meta( $product_id, '_volume', true );
+		$upc        = get_post_meta( $product_id, '_upc', true );
+
+		// Add dim weight to the product attributes displayed array.
+		if ( ! empty( $dim_weight ) ) {
+			$product_attributes['dim_weight'] = array(
+				'label' => __( 'Dim. Weight', 'import-from-hawthorne' ),
+				'value' => $dim_weight,
+			);
+		}
+
+		// Add volume to the product attributes displayed array.
+		if ( ! empty( $volume ) ) {
+			$product_attributes['volume'] = array(
+				'label' => __( 'Volume', 'import-from-hawthorne' ),
+				'value' => $volume,
+			);
+		}
+
+		// Add UPC to the product attributes displayed array.
+		if ( ! empty( $upc ) ) {
+			$product_attributes['upc'] = array(
+				'label' => __( 'UPC', 'import-from-hawthorne' ),
+				'value' => $upc,
+			);
+		}
+
+		return $product_attributes;
+	}
 }

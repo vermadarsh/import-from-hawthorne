@@ -61,7 +61,16 @@ jQuery( document ).ready( function( $ ) {
 				if ( 'products-imported' === code ) {
 					$( '.import-from-hawthorne-wrapper .finish-card' ).show(); // Show the card details for imported products.
 					$( '.import-from-hawthorne-wrapper .importing-card' ).hide(); // Hide the the progress bar.
-					console.log( 'all the products imported.' );
+
+					// Set the numeric logs here.
+					$( '.new-products-count' ).text( response.data.new_products_added );
+					$( '.old-products-updated-count' ).text( response.data.old_products_updated );
+					$( '.failed-products-count' ).text( response.data.products_import_failed );
+
+					// Hide the log button if there are no failed products.
+					if ( 0 === response.data.products_import_failed ) {
+						$( '.openCollapse_log' ).hide();
+					}
 					return false;
 				}
 
@@ -76,6 +85,7 @@ jQuery( document ).ready( function( $ ) {
 					imported_products     = ( imported_products >= total_products ) ? total_products : imported_products;
 					$( '.importing-notice span.imported-count' ).text( imported_products );
 					$( '.importing-notice span.total-products-count' ).text( total_products );
+
 					/**
 					 * Call self to import next set of products.
 					 * This wait of 500ms is just to allow the script to set the progress bar.

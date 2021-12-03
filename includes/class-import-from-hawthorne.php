@@ -168,6 +168,9 @@ class Import_From_Hawthorne {
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'hawthorne_wp_footer_callback' );
 		$this->loader->add_action( 'wp_ajax_send_cart', $plugin_public, 'hawthorne_send_cart_callback' );
 		$this->loader->add_action( 'wp_ajax_nopriv_send_cart', $plugin_public, 'hawthorne_send_cart_callback' );
+		$this->loader->add_filter( 'woocommerce_product_single_add_to_cart_text', $plugin_public, 'hawthorne_woocommerce_product_single_add_to_cart_text_callback', 20 );
+		$this->loader->add_filter( 'woocommerce_product_add_to_cart_text', $plugin_public, 'hawthorne_woocommerce_product_add_to_cart_text_callback', 20 );
+		$this->loader->add_filter( 'woocommerce_display_product_attributes', $plugin_public, 'hawthorne_woocommerce_display_product_attributes_callback', 20, 2 );
 	}
 
 	/**

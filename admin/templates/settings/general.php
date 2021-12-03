@@ -12,18 +12,16 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 // Check if the submit button is clicked.
 $update_plugin_settings = filter_input( INPUT_POST, 'hawthorne_update_plugin_settings', FILTER_SANITIZE_STRING );
 if ( ! is_null( $update_plugin_settings ) ) {
-	$api_key           = filter_input( INPUT_POST, 'api-key', FILTER_SANITIZE_STRING );
-	$api_secret_key    = filter_input( INPUT_POST, 'api-secret-key', FILTER_SANITIZE_STRING );
-	$products_endpoint = filter_input( INPUT_POST, 'products-endpoint', FILTER_SANITIZE_STRING );
-
 	// Get the settings.
 	$plugin_settings = get_option( 'hawthorne_integration_plugin_settings' );
 	$plugin_settings = ( empty( $plugin_settings ) ) ? array() : $plugin_settings;
 
 	// Add send cart settings to the settings array.
-	$plugin_settings['api_key']           = $api_key;
-	$plugin_settings['api_secret_key']    = $api_secret_key;
-	$plugin_settings['products_endpoint'] = $products_endpoint;
+	$plugin_settings['api_key']                                       = filter_input( INPUT_POST, 'api-key', FILTER_SANITIZE_STRING );
+	$plugin_settings['api_secret_key']                                = filter_input( INPUT_POST, 'api-secret-key', FILTER_SANITIZE_STRING );
+	$plugin_settings['products_endpoint']                             = filter_input( INPUT_POST, 'products-endpoint', FILTER_SANITIZE_STRING );
+	$plugin_settings['single_product_add_to_cart_button_text']        = filter_input( INPUT_POST, 'single-product-add-to-cart-button-text', FILTER_SANITIZE_STRING );
+	$plugin_settings['archive_product_pages_add_to_cart_button_text'] = filter_input( INPUT_POST, 'archive-product-pages-add-to-cart-button-text', FILTER_SANITIZE_STRING );
 
 	// Array for the settings.
 	update_option( 'hawthorne_integration_plugin_settings', $plugin_settings, false );
@@ -35,9 +33,11 @@ if ( ! is_null( $update_plugin_settings ) ) {
 }
 
 // Get the plugin settings.
-$api_key           = hawthorne_get_plugin_settings( 'api_key' );
-$api_secret_key    = hawthorne_get_plugin_settings( 'api_secret_key' );
-$products_endpoint = hawthorne_get_plugin_settings( 'products_endpoint' );
+$api_key                                       = hawthorne_get_plugin_settings( 'api_key' );
+$api_secret_key                                = hawthorne_get_plugin_settings( 'api_secret_key' );
+$products_endpoint                             = hawthorne_get_plugin_settings( 'products_endpoint' );
+$single_product_add_to_cart_button_text        = hawthorne_get_plugin_settings( 'single_product_add_to_cart_button_text' );
+$archive_product_pages_add_to_cart_button_text = hawthorne_get_plugin_settings( 'archive_product_pages_add_to_cart_button_text' );
 ?>
 <table class="form-table hack-import-subscribers-table">
 	<tbody>
@@ -68,6 +68,24 @@ $products_endpoint = hawthorne_get_plugin_settings( 'products_endpoint' );
 			<td>
 				<input type="url" required id="products-endpoint" name="products-endpoint" placeholder="https://example.com" class="regular-text" value="<?php echo esc_url( $products_endpoint ); ?>">
 				<p class="description"><?php esc_html_e( 'Hawthorne products import endpoint.', 'import-from-hawthorne' ); ?></p>
+			</td>
+		</tr>
+
+		<!-- SINGLE PRODUCT - ADD TO CART BUTTON TEXT -->
+		<tr>
+			<th scope="row"><label for="single-product-add-to-cart-button-text"><?php esc_html_e( 'Single Product - Add to Cart Button Text', 'import-from-hawthorne' ); ?></label></th>
+			<td>
+				<input type="text" required id="single-product-add-to-cart-button-text" name="single-product-add-to-cart-button-text" placeholder="<?php esc_html_e( 'Default: Add to Wishlist', 'import-from-hawthorne' ); ?>" class="regular-text" value="<?php echo esc_html( $single_product_add_to_cart_button_text ); ?>">
+				<p class="description"><?php esc_html_e( 'Add to cart button text on single product page.', 'import-from-hawthorne' ); ?></p>
+			</td>
+		</tr>
+
+		<!-- ARCHIVE PRODUCT PAGES - ADD TO CART BUTTON TEXT -->
+		<tr>
+			<th scope="row"><label for="archive-product-pages-add-to-cart-button-text"><?php esc_html_e( 'Archive Product Pages - Add to Cart Button Text', 'import-from-hawthorne' ); ?></label></th>
+			<td>
+				<input type="text" required id="archive-product-pages-add-to-cart-button-text" name="archive-product-pages-add-to-cart-button-text" placeholder="<?php esc_html_e( 'Default: Add to Wishlist', 'import-from-hawthorne' ); ?>" class="regular-text" value="<?php echo esc_html( $archive_product_pages_add_to_cart_button_text ); ?>">
+				<p class="description"><?php esc_html_e( 'Add to cart button text on archive product pages.', 'import-from-hawthorne' ); ?></p>
 			</td>
 		</tr>
 	</tbody>

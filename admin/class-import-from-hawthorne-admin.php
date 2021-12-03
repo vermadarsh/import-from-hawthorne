@@ -292,12 +292,15 @@ class Import_From_Hawthorne_Admin {
 
 			// If the product doesn't exist.
 			if ( is_null( $product_exists ) ) {
-				hawthorne_create_product( $part ); // Create product.
+				$product_id = hawthorne_create_product( $product_title ); // Create product with title.
 				$new_products_added++; // Increase the counter of new product created.
 			} else {
-				hawthorne_update_product( $product_exists->ID, $part ); // Update product.
+				$product_id = $product_exists->ID;
 				$old_products_updated++; // Increase the counter of old product updated.
 			}
+
+			// Update product.
+			hawthorne_update_product( $product_id, $part );
 		}
 
 		// Send the AJAX response now.
@@ -477,13 +480,8 @@ class Import_From_Hawthorne_Admin {
 
 			// Check if the product exists with the name.
 			$product_exists = get_page_by_title( $product_title, OBJECT, 'product' );
-
-			// If the product doesn't exist.
-			if ( is_null( $product_exists ) ) {
-				hawthorne_create_product( $part ); // Create product.
-			} else {
-				hawthorne_update_product( $product_exists->ID, $part ); // Update product.
-			}
+			$product_id     = ( is_null( $product_exists ) ) ? hawthorne_create_product( $product_title ) : $product_exists->ID;
+			hawthorne_update_product( $product_exists->ID, $part ); // Update product.
 		}
 
 		// Increase the page value.

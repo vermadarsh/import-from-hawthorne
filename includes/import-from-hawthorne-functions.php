@@ -91,6 +91,14 @@ if ( ! function_exists( 'hawthorne_get_plugin_settings' ) ) {
 				$data = ( ! empty( $plugin_settings['clear_cart'] ) ) ? $plugin_settings['clear_cart'] : '';
 				break;
 
+			case 'single_product_add_to_cart_button_text':
+				$data = ( ! empty( $plugin_settings['single_product_add_to_cart_button_text'] ) ) ? $plugin_settings['single_product_add_to_cart_button_text'] : __( 'Add to Wishlist', 'import-from-hawthorne' );
+				break;
+
+			case 'archive_product_pages_add_to_cart_button_text':
+				$data = ( ! empty( $plugin_settings['archive_product_pages_add_to_cart_button_text'] ) ) ? $plugin_settings['archive_product_pages_add_to_cart_button_text'] : __( 'Add to Wishlist', 'import-from-hawthorne' );
+				break;
+
 			default:
 				$data = -1;
 		}
@@ -204,10 +212,20 @@ if ( ! function_exists( 'hawthorne_create_product' ) ) {
 	/**
 	 * Create new product and insert that into the database.
 	 *
-	 * @param array $part New product data.
+	 * @param array $product_title New product title.
 	 * @return int
 	 */
-	function hawthorne_create_product( $part ) {
+	function hawthorne_create_product( $product_title ) {
+		// Save the product post object in the database and return the product ID.
+		return wp_insert_post(
+			array(
+				'post_title'   => $product_title,
+				'post_status'  => 'publish',
+				'post_author'  => 1,
+				'post_date'    => gmdate( 'Y-m-d H:i:s' ),
+				'post_type'    => 'product',
+			)
+		);
 	}
 }
 
@@ -223,7 +241,6 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 	 * @return int
 	 */
 	function hawthorne_update_product( $existing_product_id, $part ) {
-		debug( $part ); die;
 		global $wpdb;
 		$sku     = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
 		$msrp    = ( ! empty( $part['EachMsrp'] ) ) ? $part['EachMsrp'] : '';
@@ -302,8 +319,6 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 				'%d',
 			)
 		);
-
-		die("updated");
 	}
 }
 

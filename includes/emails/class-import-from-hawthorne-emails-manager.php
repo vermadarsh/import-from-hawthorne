@@ -25,7 +25,7 @@ class Hawthorne_Custom_Email_Manager {
 	 */
 	public function __construct() {
 		define( 'HAWTHORNE_EMAIL_TEMPLATE_PATH', HAWTHORNE_PLUGIN_PATH . 'admin/templates/emails/' );
-		add_action( 'shoot_cart_to_greenlight_email', array( &$this, 'hawthorne_shoot_cart_to_greenlight_email_callback' ), 10, 2 );
+		add_action( 'shoot_cart_to_greenlight_email', array( &$this, 'hawthorne_shoot_cart_to_greenlight_email_callback' ), 10, 4 );
 		add_filter( 'woocommerce_email_classes', array( &$this, 'hawthorne_woocommerce_email_classes_callback' ) );
 	}
 
@@ -36,7 +36,7 @@ class Hawthorne_Custom_Email_Manager {
 	 * @param array $cart_items Cart items.
 	 * @since 1.0.0
 	 */
-	public function hawthorne_shoot_cart_to_greenlight_email_callback( $customer_details, $cart_items ) {
+	public function hawthorne_shoot_cart_to_greenlight_email_callback( $customer_details, $cart_items, $coupon_items, $cart_totals ) {
 		new WC_Emails();
 		/**
 		 * This action fires when the customer send the cart to greenlight.
@@ -45,7 +45,7 @@ class Hawthorne_Custom_Email_Manager {
 		 * @param array $cart_items Cart items.
 		 * @since 1.0.0
 		 */
-		do_action( 'hawthorne_shoot_cart_to_greenlight_email_callback_notification', $customer_details, $cart_items );
+		do_action( 'hawthorne_shoot_cart_to_greenlight_email_callback_notification', $customer_details, $cart_items, $coupon_items, $cart_totals );
 	}
 
 	/**

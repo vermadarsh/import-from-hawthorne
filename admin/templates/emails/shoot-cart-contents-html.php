@@ -2,8 +2,8 @@
 /**
  * Reservation reminder email.
  *
- * @package Easy_Reservations
- * @subpackage Easy_Reservations/admin/templates/emails
+ * @package Import_From_Hawthorne
+ * @subpackage Import_From_Hawthorne/admin/templates/emails
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -95,7 +95,33 @@ do_action( 'woocommerce_email_header', $email_heading );
 		?>
 	</tbody>
 </table>
-<p><?php esc_html_e( 'This is a system generated email. Please DO NOT respond to it.', 'easy-reservations' ); ?></p>
+
+<!-- APPLIED COUPONS -->
+<?php if ( ! empty( $email_data->coupons ) && is_array( $email_data->coupons ) ) { ?>
+	<h3><?php esc_html_e( 'Applied Coupons:', 'import-from-hawthorne' ); ?></h3>
+	<table cellspacing="0" cellpadding="6" style="width: 100%; border: 1px solid #eee;" bordercolor="#eee">
+		<tbody>
+			<!-- COUPONS ITERATION -->
+			<?php foreach ( $email_data->coupons as $coupon_code => $discount_subtotal ) { ?>
+				<tr>
+					<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php echo esc_html( $coupon_code ); ?></th>
+					<td style="text-align:left; border: 1px solid #eee;"><?php echo wp_kses_post( wc_price( $discount_subtotal ) ); ?></td>
+				</tr>
+			<?php } ?>
+
+			<!-- COUPONS TOTAL DISCOUNT -->
+			<tr>
+				<th scope="row" style="text-align:left; border: 1px solid #eee;"><?php esc_html_e( 'Discount Total', 'import-from-hawthorne' ); ?></th>
+				<td style="text-align:left; border: 1px solid #eee;"><?php echo wp_kses_post( wc_price( ( ! empty( $email_data->cart_totals['discount_total'] ) ? $email_data->cart_totals['discount_total'] : 0 ) ) ); ?></td>
+			</tr>
+		</tbody>
+	</table>
+<?php } ?>
+
+<!-- CART TOTALS -->
+<h3><?php echo sprintf( __( 'Cart Total: %s', 'import-from-hawthorne' ), wc_price( ! empty( $email_data->cart_totals['cart_contents_total'] ) ? $email_data->cart_totals['cart_contents_total'] : 0 ) ); ?></h3>
+
+<p><?php esc_html_e( 'This is a system generated email. Please DO NOT respond to it.', 'import-from-hawthorne' ); ?></p>
 <?php
 /**
  * This hook runs on the custom email footers.

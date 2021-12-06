@@ -14,9 +14,19 @@ $customer_id         = get_current_user_id();
 $customer            = ( 0 !== $customer_id ) ? new WC_Customer( $customer_id ) : false;
 $customer_first_name = ( false !== $customer ) ? $customer->get_billing_first_name() : '';
 $customer_last_name  = ( false !== $customer ) ? $customer->get_billing_last_name() : '';
-$customer_full_name  = "{$customer_first_name} {$customer_last_name}";
 $customer_phone      = ( false !== $customer ) ? $customer->get_billing_phone() : '';
 $customer_email      = ( false !== $customer ) ? $customer->get_billing_email() : '';
+
+// Prepare the customer full name.
+if ( ! empty( $customer_first_name ) && ! empty( $customer_last_name ) ) {
+	$customer_full_name  = "{$customer_first_name} {$customer_last_name}";
+} elseif ( ! empty( $customer_first_name ) ) {
+	$customer_full_name  = $customer_first_name;
+} elseif ( ! empty( $customer_last_name ) ) {
+	$customer_full_name  = $customer_last_name;
+} else {
+	$customer_full_name = '';
+}
 ?>
 <div class="modal fade" id="hawthorne-shoot-cart-contents-modal" tabindex="-1" aria-labelledby="hawthorne-shoot-cart-contents-modal-label" aria-hidden="false">
 	<div class="modal-dialog modal-dialog-centered">

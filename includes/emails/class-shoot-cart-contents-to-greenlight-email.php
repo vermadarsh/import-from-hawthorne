@@ -42,7 +42,7 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 		$this->template_html  = 'shoot-cart-contents-html.php';
 		$this->template_plain = 'plain/shoot-cart-contents-plain.php';
 
-		add_action( 'hawthorne_shoot_cart_to_greenlight_email_callback_notification', array( $this, 'hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback' ), 20, 2 );
+		add_action( 'hawthorne_shoot_cart_to_greenlight_email_callback_notification', array( $this, 'hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback' ), 20, 4 );
 
 		// Call parent constructor.
 		parent::__construct();
@@ -61,9 +61,9 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	 * @param array $cart_items Cart items.
 	 * @since 1.0.0
 	 */
-	public function hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback( $customer_details, $cart_items ) {
+	public function hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback( $customer_details, $cart_items, $coupon_items, $cart_totals ) {
 		// Email data object.
-		$this->object = $this->create_object( $customer_details, $cart_items );
+		$this->object = $this->create_object( $customer_details, $cart_items, $coupon_items, $cart_totals );
 
 		// Fire the notification now.
 		$this->send(
@@ -83,13 +83,15 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	 * @return stdClass
 	 * @since 1.0.0
 	 */
-	public static function create_object( $customer_details, $cart_items ) {
+	public static function create_object( $customer_details, $cart_items, $coupon_items, $cart_totals ) {
 		global $wpdb;
 		$cart_object = new stdClass();
 
 		// Set the cart object.
-		$cart_object->cart     = $cart_items; // WooCommerce cart contents.
-		$cart_object->customer = $customer_details; // Requesting customer details.
+		$cart_object->cart        = $cart_items; // WooCommerce cart contents.
+		$cart_object->customer    = $customer_details; // Requesting customer details.
+		$cart_object->coupons     = $coupon_items; // Applied coupon details.
+		$cart_object->cart_totals = $cart_totals; // Applied coupon details.
 
 		/**
 		 * This filter is fired when sending cart contents email to the store owner.

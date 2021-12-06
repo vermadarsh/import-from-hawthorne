@@ -170,6 +170,12 @@ class Import_From_Hawthorne_Public {
 			}
 		}
 
+		// If there is a coupon applied.
+		$coupon_items = ( ! empty( WC()->cart->coupon_discount_totals ) && is_array( WC()->cart->coupon_discount_totals ) ) ? WC()->cart->coupon_discount_totals : array();
+
+		// Get the cart totals.
+		$cart_totals = WC()->cart->get_totals();
+
 		/**
 		 * Send the email now.
 		 *
@@ -179,7 +185,7 @@ class Import_From_Hawthorne_Public {
 		 * @param array $cart_items Cart items array.
 		 * @since 1.0.0
 		 */
-		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items );
+		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items, $coupon_items, $cart_totals );
 
 		// Clear cart if required.
 		$clear_cart = hawthorne_get_plugin_settings( 'clear_cart' );

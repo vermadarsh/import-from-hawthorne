@@ -83,7 +83,7 @@ jQuery( document ).ready( function( $ ) {
 		}
 
 		// Block the button.
-		block_element( this_button );
+		// block_element( this_button );
 
 		// Activate loader.
 		this_button.html( '<span class="ajax-request-in-process"><i class="fa fa-refresh fa-spin"></i></span> Please wait...' );

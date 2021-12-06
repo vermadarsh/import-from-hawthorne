@@ -51,7 +51,7 @@ class Import_From_Hawthorne_Public {
 		if ( ! is_cart() ) {
 			return;
 		}
-		
+
 		// Custom public style.
 		wp_enqueue_style(
 			$this->plugin_name,
@@ -159,7 +159,7 @@ class Import_From_Hawthorne_Public {
 				$cart_item_variation_id = ( ! empty( $cart_item['variation_id'] ) && 0 !== $cart_item['variation_id'] ) ? $cart_item['variation_id'] : 0;
 				$product_id             = ( 0 === $cart_item_variation_id ) ? $cart_item_product_id : $cart_item_variation_id;
 				$product_image_id       = get_post_thumbnail_id( $product_id );
-				$cart_items[] = array(
+				$cart_items[]           = array(
 					'id'       => $product_id,
 					'name'     => get_the_title( $product_id ),
 					'image'    => hawthorne_get_attachment_url_from_attachment_id( $product_image_id ),

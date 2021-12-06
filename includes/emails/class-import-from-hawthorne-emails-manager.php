@@ -8,7 +8,11 @@
  * @package    Import_From_Hawthorne
  * @subpackage Import_From_Hawthorne/includes/emails
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Custom email templates manager class.
@@ -19,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @subpackage Import_From_Hawthorne/includes/emails
  * @author     Adarsh Verma <adarsh@cmsminds.com>
  */
-class Hawthorne_Custom_Email_Manager {
+class Import_From_Hawthorne_Emails_Manager {
 	/**
 	 * Constructor to help define actions.
 	 */
@@ -34,6 +38,8 @@ class Hawthorne_Custom_Email_Manager {
 	 *
 	 * @param array $customer_details Customer details.
 	 * @param array $cart_items Cart items.
+	 * @param array $coupon_items Applied coupon items.
+	 * @param array $cart_totals Cart totals.
 	 * @since 1.0.0
 	 */
 	public function hawthorne_shoot_cart_to_greenlight_email_callback( $customer_details, $cart_items, $coupon_items, $cart_totals ) {
@@ -66,4 +72,4 @@ class Hawthorne_Custom_Email_Manager {
 	}
 }
 
-new Hawthorne_Custom_Email_Manager();
+new Import_From_Hawthorne_Emails_Manager();

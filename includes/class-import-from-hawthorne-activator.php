@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin activation
  *
@@ -21,7 +20,6 @@
  * @author     Adarsh Verma <adarsh@cmsminds.com>
  */
 class Import_From_Hawthorne_Activator {
-
 	/**
 	 * Short Description. (use period)
 	 *
@@ -48,6 +46,6 @@ class Import_From_Hawthorne_Activator {
 		}
 
 		// Redirect to plugin settings page on the plugin activation.
-		add_option( 'hawthorne_do_plugin_activation_redirect', 1, false );
+		add_option( 'hawthorne_do_plugin_activation_redirect', 1 );
 	}
 }

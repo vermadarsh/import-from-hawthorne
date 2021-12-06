@@ -119,7 +119,20 @@ do_action( 'woocommerce_email_header', $email_heading );
 <?php } ?>
 
 <!-- CART TOTALS -->
-<h3><?php echo sprintf( __( 'Cart Total: %s', 'import-from-hawthorne' ), wc_price( ! empty( $email_data->cart_totals['cart_contents_total'] ) ? $email_data->cart_totals['cart_contents_total'] : 0 ) ); ?></h3>
+<h3>
+	<?php
+	echo wp_kses_post(
+		sprintf(
+			/* translators: 1: %s: cart total */
+			__(
+				'Cart Total: %s',
+				'import-from-hawthorne'
+			),
+			wc_price( ! empty( $email_data->cart_totals['cart_contents_total'] ) ? $email_data->cart_totals['cart_contents_total'] : 0 )
+		)
+	);
+	?>
+</h3>
 
 <p><?php esc_html_e( 'This is a system generated email. Please DO NOT respond to it.', 'import-from-hawthorne' ); ?></p>
 <?php

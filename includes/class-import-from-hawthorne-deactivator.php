@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin deactivation
  *
@@ -21,7 +20,6 @@
  * @author     Adarsh Verma <adarsh@cmsminds.com>
  */
 class Import_From_Hawthorne_Deactivator {
-
 	/**
 	 * Short Description. (use period)
 	 *

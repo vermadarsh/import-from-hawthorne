@@ -8,7 +8,11 @@
  * @package    Import_From_Hawthorne
  * @subpackage Import_From_Hawthorne/includes/emails
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Shoot cart contents email class.
@@ -59,6 +63,8 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	 *
 	 * @param array $customer_details Customer details.
 	 * @param array $cart_items Cart items.
+	 * @param array $coupon_items Applied coupon items.
+	 * @param array $cart_totals Cart totals.
 	 * @since 1.0.0
 	 */
 	public function hawthorne_hawthorne_shoot_cart_to_greenlight_email_callback_notification_callback( $customer_details, $cart_items, $coupon_items, $cart_totals ) {
@@ -118,8 +124,8 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 		wc_get_template(
 			$this->template_html,
 			array(
-				'email_data'     => $this->object,
-				'email_heading' => $this->get_heading()
+				'email_data'    => $this->object,
+				'email_heading' => $this->get_heading(),
 			),
 			'',
 			$this->template_base
@@ -140,7 +146,7 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 			$this->template_plain,
 			array(
 				'item_data'     => $this->object,
-				'email_heading' => $this->get_heading()
+				'email_heading' => $this->get_heading(),
 			),
 			'',
 			$this->template_base
@@ -177,7 +183,7 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 
 		return apply_filters( 'woocommerce_email_heading_' . $this->id, $this->format_string( $this->heading ), $this->object );
 	}
-	
+
 	/**
 	 * Get the email attachments.
 	 *
@@ -189,31 +195,31 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	}
 
 	/**
-	 * Get the email settings.
-	 *
-	 * @return string
+	 * Define the email settings.
 	 */
 	public function init_form_fields() {
 		$this->form_fields = array(
-			'enabled' => array(
+			'enabled'    => array(
 				'title'   => __( 'Enable/Disable', 'import-from-hawthorne' ),
 				'type'    => 'checkbox',
 				'label'   => __( 'Enable this email notification', 'import-from-hawthorne' ),
-				'default' => 'yes'
+				'default' => 'yes',
 			),
-			'subject' => array(
+			'subject'    => array(
 				'title'       => __( 'Subject', 'import-from-hawthorne' ),
 				'type'        => 'text',
+				/* translators: 1: %s: email subject */
 				'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'import-from-hawthorne' ), $this->subject ),
 				'placeholder' => '',
-				'default'     => ''
+				'default'     => '',
 			),
-			'heading' => array(
+			'heading'    => array(
 				'title'       => __( 'Email Heading', 'import-from-hawthorne' ),
 				'type'        => 'text',
+				/* translators: 1: %s: email heading */
 				'description' => sprintf( __( 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', 'import-from-hawthorne' ), $this->heading ),
 				'placeholder' => '',
-				'default'     => ''
+				'default'     => '',
 			),
 			'email_type' => array(
 				'title'       => __( 'Email type', 'import-from-hawthorne' ),
@@ -221,10 +227,10 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 				'description' => __( 'Choose which format of email to send.', 'import-from-hawthorne' ),
 				'default'     => 'html',
 				'class'       => 'email_type',
-				'options'		=> array(
+				'options'     => array(
 					'html' => __( 'HTML', 'import-from-hawthorne' ),
-				)
-			)
+				),
+			),
 		);
 	}
 } // end \Reservation_Reminder_Email class

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -24,7 +23,7 @@
  * @subpackage Import_From_Hawthorne/includes
  * @author     Adarsh Verma <adarsh@cmsminds.com>
  */
-class Import_From_Hawthorne_i18n {
+class Import_From_Hawthorne_I18n {
 
 
 	/**

@@ -36,7 +36,23 @@ $total_products = count( $products );
 	<section class="import-from-hawthorne-wrapper">
 		<div class="card importing-card">
 			<h2 class="heading"><?php esc_html_e( 'Importing', 'import-from-hawthorne' ); ?></h2>
-			<p class="importing-notice"><?php echo sprintf( __( 'Your products are now being imported... %1$s0%3$s of %2$s%4$s%3$s imported', 'import-from-hawthorne' ), '<span class="imported-count">', '<span class="total-products-count">', '</span>', $total_products ); ?></p>
+			<p class="importing-notice">
+				<?php
+				echo wp_kses_post(
+					sprintf(
+						/* translators: 1: %s: span tag, 2: %s: span tag, 3: %s: span tag closed, 4: %d: total products count */
+						__(
+							'Your products are now being imported... %1$s0%3$s of %2$s%4$s%3$s imported',
+							'import-from-hawthorne'
+						),
+						'<span class="imported-count">',
+						'<span class="total-products-count">',
+						'</span>',
+						$total_products
+					)
+				);
+				?>
+			</p>
 			<div class="progress-bar-wrapper">
 				<progress class="importer-progress" max="100" value="0"></progress>
 				<span class="value">0%</span>
@@ -50,19 +66,21 @@ $total_products = count( $products );
 				<span class="dashicons dashicons-yes-alt icon"></span>
 				<p>
 					<?php
-					/* translators: 1: %s: total products count, 2: %s: strong tag open, 3: %s: strong tag closed */
-					echo sprintf(
-						__(
-							'%1$s products imported. New products: %2$s%4$s%7$s%3$s Updated products: %2$s%5$s%7$s%3$s Failed products: %2$s%6$s%7$s%3$s',
-							'import-from-hawthorne'
-						),
-						$total_products,
-						'<strong>',
-						'</strong>',
-						'<span class="new-products-count">',
-						'<span class="old-products-updated-count">',
-						'<span class="failed-products-count">',
-						'</span>'
+					echo wp_kses_post(
+						sprintf(
+							/* translators: 1: %s: total products count, 2: %s: strong tag open, 3: %s: strong tag closed, 4: %s: span tag, 5: %s: span tag, 6: %s: span tag, 7: %s: span tag closed */
+							__(
+								'%1$s products imported. New products: %2$s%4$s%7$s%3$s Updated products: %2$s%5$s%7$s%3$s Failed products: %2$s%6$s%7$s%3$s',
+								'import-from-hawthorne'
+							),
+							$total_products,
+							'<strong>',
+							'</strong>',
+							'<span class="new-products-count">',
+							'<span class="old-products-updated-count">',
+							'<span class="failed-products-count">',
+							'</span>'
+						)
 					);
 					?>
 				</p>

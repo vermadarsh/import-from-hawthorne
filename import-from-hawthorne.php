@@ -29,9 +29,6 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-// error_reporting( E_ALL );
-// ini_set( 'display_errors', '1' );
-
 /**
  * Currently plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
@@ -154,6 +151,3 @@ function hawthorne_plugin_actions_callback( $links ) {
 
 	return array_merge( $this_plugin_links, $links );
 }
-
-// Remove cart page actions to replace the button, "Proceed to Checkout"
-remove_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20 );

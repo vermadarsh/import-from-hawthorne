@@ -22,25 +22,22 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 		success: <span class="fa fa-check-circle mr-2"></span>
 
 
-        For JS
-
-        in this class class="hawthorne-notification toast fade hide"
-
-        remove hide and add show class !!
-
+		For JS
+		in this class class="hawthorne-notification toast fade hide"
+		remove hide and add show class !!
 	-->
 	<div class="hawthorne-notification toast fade hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="6000" data-animation="false">
 		<div class="toast-header bg-transparent">
 			<span class="hawthorne-notification-icon fa mr-2"></span>
 			<strong class="hawthorne-notification-heading mr-auto">
-                Hey Title
-            </strong>
+				Hey Title
+			</strong>
 			<button type="button" class="close" data-dismiss="toast" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
 		</div>
 		<div class="toast-body hawthorne-notification-message">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Earum, error, porro distinctio aliquam autem maxime nostrum quaerat officiis ut at vitae accusamus corporis dignissimos alias voluptas veritatis recusandae iusto tenetur?
-        </div>
+			Lorem ipsum dolor sit amet consectetur, adipisicing elit. Earum, error, porro distinctio aliquam autem maxime nostrum quaerat officiis ut at vitae accusamus corporis dignissimos alias voluptas veritatis recusandae iusto tenetur?
+		</div>
 	</div>
 </div>

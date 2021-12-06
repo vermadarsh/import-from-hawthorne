@@ -9,22 +9,8 @@
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-/**
- * Check, if the function exists.
- */
-if ( ! function_exists( 'debug' ) ) {
-	/**
-	 * Debug function definition.
-	 * Debugger function which shall be removed in production.
-	 *
-	 * @since 1.0.0
-	 */
-	function debug( $params ) {
-		echo '<pre>';
-		print_r( $params );
-		echo '</pre>';
-	}
-}
+// Remove cart page actions to replace the button, "Proceed to Checkout".
+remove_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20 );
 
 /**
  * Check, if the function exists.
@@ -47,7 +33,7 @@ if ( ! function_exists( 'hawthorne_get_authentication_signature' ) ) {
 			'time'     => $current_time,
 		);
 
-		return strtoupper( hash_hmac( "sha256", add_query_arg( $signature_args, $api_base_url ), $api_secret_key ) );
+		return strtoupper( hash_hmac( 'sha256', add_query_arg( $signature_args, $api_base_url ), $api_secret_key ) );
 	}
 }
 
@@ -124,19 +110,19 @@ if ( ! function_exists( 'hawthorne_fetch_products' ) ) {
 		$api_secret_key    = hawthorne_get_plugin_settings( 'api_secret_key' );
 		$current_time      = gmdate( 'Y-m-d\TH:i:s\Z' );
 		$api_args          = array(
-			'headers'      => array_merge(
+			'headers'   => array_merge(
 				array(
 					'Content-Type' => 'application/json',
 				)
 			),
-			'body'         => array(
+			'sslverify' => false,
+			'timeout'   => 600,
+			'body'      => array(
 				'format'    => 'json',
 				'X-ApiKey'  => $api_key,
 				'time'      => $current_time,
 				'signature' => hawthorne_get_authentication_signature( $api_key, $api_secret_key, $products_endpoint, $current_time ),
 			),
-			'sslverify'    => false,
-			'timeout'      => 600,
 		);
 
 		$api_response      = wp_remote_get( $products_endpoint, $api_args ); // Shoot the API.
@@ -219,11 +205,11 @@ if ( ! function_exists( 'hawthorne_create_product' ) ) {
 		// Save the product post object in the database and return the product ID.
 		return wp_insert_post(
 			array(
-				'post_title'   => $product_title,
-				'post_status'  => 'publish',
-				'post_author'  => 1,
-				'post_date'    => gmdate( 'Y-m-d H:i:s' ),
-				'post_type'    => 'product',
+				'post_title'  => $product_title,
+				'post_status' => 'publish',
+				'post_author' => 1,
+				'post_date'   => gmdate( 'Y-m-d H:i:s' ),
+				'post_type'   => 'product',
 			)
 		);
 	}
@@ -238,7 +224,7 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 	 *
 	 * @param int   $existing_product_id Existing product data.
 	 * @param array $part API product data.
-	 * @return int
+	 * @return void
 	 */
 	function hawthorne_update_product( $existing_product_id, $part ) {
 		global $wpdb;
@@ -329,8 +315,11 @@ if ( ! function_exists( 'hawthorne_update_product_category_data' ) ) {
 	/**
 	 * Update the category data of the product.
 	 *
-	 * @param int $product_id Product ID from the WordPress database.
-	 * @param string 
+	 * @param int    $product_id Product ID from the WordPress database.
+	 * @param string $hawthorne_category_id Category ID fetched from Hawthorne.
+	 * @param string $hawthorne_category_web_id Category slug fetched from Hawthorne.
+	 * @param string $hawthorne_category_name Category name fetched from Hawthorne.
+	 * @return void
 	 */
 	function hawthorne_update_product_category_data( $product_id, $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) {
 		// Get the category terms already assigned to the product.
@@ -345,7 +334,7 @@ if ( ! function_exists( 'hawthorne_update_product_category_data' ) ) {
 		// Check if the category received from the API is one of the assigned.
 		foreach ( $product_cats as $product_cat ) {
 			// If the category name matches, break the loop.
-			if ( $hawthorne_category_name === htmlspecialchars_decode( $product_cat->name ) ) {
+			if ( htmlspecialchars_decode( $product_cat->name ) === $hawthorne_category_name ) {
 				$category_already_assigned = true;
 				break;
 			}
@@ -375,8 +364,11 @@ if ( ! function_exists( 'hawthorne_update_product_brand_data' ) ) {
 	/**
 	 * Update the brand data of the product.
 	 *
-	 * @param int $product_id Product ID from the WordPress database.
-	 * @param string 
+	 * @param int    $product_id Product ID from the WordPress database.
+	 * @param string $hawthorne_brand_id Brand ID fetched from Hawthorne.
+	 * @param string $hawthorne_brand_web_id Brand slug fetched from Hawthorne.
+	 * @param string $hawthorne_brand_name Brand name fetched from Hawthorne.
+	 * @return void
 	 */
 	function hawthorne_update_product_brand_data( $product_id, $hawthorne_brand_id, $hawthorne_brand_web_id, $hawthorne_brand_name ) {
 		// Get the brand terms already assigned to the product.
@@ -391,7 +383,7 @@ if ( ! function_exists( 'hawthorne_update_product_brand_data' ) ) {
 		// Check if the brand received from the API is one of the assigned.
 		foreach ( $product_brands as $product_brand ) {
 			// If the brand name matches, break the loop.
-			if ( $hawthorne_brand_name === htmlspecialchars_decode( $product_brand->name ) ) {
+			if ( htmlspecialchars_decode( $product_brand->name ) === $hawthorne_brand_name ) {
 				$brand_already_assigned = true;
 				break;
 			}
@@ -421,8 +413,9 @@ if ( ! function_exists( 'hawthorne_create_product_category_term' ) ) {
 	/**
 	 * Create a category term and save in the database.
 	 *
-	 * @param int $product_id Product ID from the WordPress database.
-	 * @param string 
+	 * @param string $hawthorne_category_id Category ID fetched from Hawthorne.
+	 * @param string $hawthorne_category_web_id Category slug fetched from Hawthorne.
+	 * @param string $hawthorne_category_name Category name fetched from Hawthorne.
 	 */
 	function hawthorne_create_product_category_term( $hawthorne_category_id, $hawthorne_category_web_id, $hawthorne_category_name ) {
 		// Insert the term now.
@@ -450,8 +443,9 @@ if ( ! function_exists( 'hawthorne_create_product_brand_term' ) ) {
 	/**
 	 * Create a brand term and save in the database.
 	 *
-	 * @param int $product_id Product ID from the WordPress database.
-	 * @param string 
+	 * @param string $hawthorne_brand_id Brand ID fetched from Hawthorne.
+	 * @param string $hawthorne_brand_web_id Brand slug fetched from Hawthorne.
+	 * @param string $hawthorne_brand_name Brand name fetched from Hawthorne.
 	 */
 	function hawthorne_create_product_brand_term( $hawthorne_brand_id, $hawthorne_brand_web_id, $hawthorne_brand_name ) {
 		// Insert the term now.
@@ -521,10 +515,10 @@ if ( ! function_exists( 'hawthorne_update_product_featured_image' ) ) {
 	 * @since 1.0.0
 	 */
 	function hawthorne_update_product_featured_image( $image_url, $product_id ) {
-		$image_basename   = pathinfo( $image_url );
-		$image_name       = $image_basename['basename'];
-		$upload_dir       = wp_upload_dir();
-		$image_data       = hawthorne_get_image_data( $image_url );
+		$image_basename = pathinfo( $image_url );
+		$image_name     = $image_basename['basename'];
+		$upload_dir     = wp_upload_dir();
+		$image_data     = hawthorne_get_image_data( $image_url );
 
 		// Return, if image data is not properly received.
 		if ( is_null( $image_data ) ) {

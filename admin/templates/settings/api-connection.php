@@ -21,23 +21,22 @@ if ( ! is_null( $test_api_connection ) ) {
 	$api_secret_key = hawthorne_get_plugin_settings( 'api_secret_key' );
 	$current_time   = gmdate( 'Y-m-d\TH:i:s\Z' );
 	$api_args       = array(
-		'headers'      => array_merge(
+		'headers'   => array_merge(
 			$custom_headers,
 			array(
 				'Content-Type' => 'application/json',
 			)
 		),
-		'body'         => array(
+		'body'      => array(
 			'format'    => 'json',
 			'X-ApiKey'  => $api_key,
 			'time'      => $current_time,
 			'signature' => hawthorne_get_authentication_signature( $api_key, $api_secret_key, $api_base_url, $current_time ),
 		),
-		'sslverify'    => false,
-		'timeout'      => 600,
+		'sslverify' => false,
+		'timeout'   => 600,
 	);
 
-	
 	$api_response      = wp_remote_get( $api_base_url, $api_args ); // Shoot the API.
 	$api_response_code = wp_remote_retrieve_response_code( $api_response ); // Get the response code.
 
@@ -67,7 +66,7 @@ if ( ! is_null( $test_api_connection ) ) {
 				?>
 			</p>
 		</div>
-	<?php
+		<?php
 	}
 }
 ?>

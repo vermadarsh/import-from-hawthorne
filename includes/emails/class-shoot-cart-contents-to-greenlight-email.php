@@ -80,6 +80,8 @@ class Shoot_Cart_Contents_To_Greenlight_Email extends WC_Email {
 	 *
 	 * @param array $customer_details Customer details.
 	 * @param array $cart_items Cart items.
+	 * @param array $coupon_items Applied coupon items.
+	 * @param array $cart_totals Cart totals.
 	 * @return stdClass
 	 * @since 1.0.0
 	 */

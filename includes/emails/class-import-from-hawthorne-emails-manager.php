@@ -43,6 +43,8 @@ class Hawthorne_Custom_Email_Manager {
 		 *
 		 * @param array $customer_details Customer details.
 		 * @param array $cart_items Cart items.
+		 * @param array $coupon_items Applied coupon items.
+		 * @param array $cart_totals Cart totals.
 		 * @since 1.0.0
 		 */
 		do_action( 'hawthorne_shoot_cart_to_greenlight_email_callback_notification', $customer_details, $cart_items, $coupon_items, $cart_totals );

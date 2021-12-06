@@ -183,6 +183,8 @@ class Import_From_Hawthorne_Public {
 		 *
 		 * @param array $customer_details Customer details array.
 		 * @param array $cart_items Cart items array.
+		 * @param array $coupon_items Applied coupon items.
+		 * @param array $cart_totals Cart totals.
 		 * @since 1.0.0
 		 */
 		do_action( 'shoot_cart_to_greenlight_email', $customer_details, $cart_items, $coupon_items, $cart_totals );

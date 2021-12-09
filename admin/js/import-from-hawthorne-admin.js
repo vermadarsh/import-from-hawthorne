@@ -8,14 +8,17 @@ jQuery( document ).ready( function( $ ) {
 	var ajaxurl                    = Hawthorne_Admin_Script_Vars.ajaxurl;
 	var product_import_button_text = Hawthorne_Admin_Script_Vars.product_import_button_text;
 	var product_import_admin_url   = Hawthorne_Admin_Script_Vars.product_import_admin_url;
+	var show_import_button         = Hawthorne_Admin_Script_Vars.show_import_button;
 
 	// Insert the import button.
-	$( '<div class="dropdown"><a href="' + product_import_admin_url + '" class="page-title-action import-sub-dropdown">' + product_import_button_text + '</a></div>' ).insertAfter( 'body.post-type-product .wrap a.page-title-action:nth-child(3)' );
-	$( 'body.post-type-product .wrap a.page-title-action:nth-child(3)' ).addClass( 'dropdown-btn' );
-	$( '<a href="javascript:void(0);" class="page-title-action import-sub-dropdown-btn"><span class="dashicons dashicons-arrow-down"></span></a>' ).insertAfter( '.dropdown-btn' );
-	$( document ).on( 'click', '.import-sub-dropdown-btn', function () {
-		$( '.dropdown' ).toggleClass( 'show' );
-	} );
+	if ( is_valid_string( show_import_button ) && 'yes' === show_import_button ) {
+		$( '<div class="dropdown"><a href="' + product_import_admin_url + '" class="page-title-action import-sub-dropdown">' + product_import_button_text + '</a></div>' ).insertAfter( 'body.post-type-product .wrap a.page-title-action:nth-child(3)' );
+		$( 'body.post-type-product .wrap a.page-title-action:nth-child(3)' ).addClass( 'dropdown-btn' );
+		$( '<a href="javascript:void(0);" class="page-title-action import-sub-dropdown-btn"><span class="dashicons dashicons-arrow-down"></span></a>' ).insertAfter( '.dropdown-btn' );
+		$( document ).on( 'click', '.import-sub-dropdown-btn', function () {
+			$( '.dropdown' ).toggleClass( 'show' );
+		} );
+	}
 
 	// Remove the notice from elementor.
 	$( '.e-notice--extended' ).remove();
@@ -97,6 +100,16 @@ jQuery( document ).ready( function( $ ) {
 				}
 			},
 		} );
+	}
+
+	/**
+	 * Check if a string is valid.
+	 *
+	 * @param {string} $data
+	 */
+	function is_valid_string( data ) {
+
+		return ( '' === data || undefined === data || ! isNaN( data ) || 0 === data ) ? -1 : 1;
 	}
 
 	/**

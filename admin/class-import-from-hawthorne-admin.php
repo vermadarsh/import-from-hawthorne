@@ -66,6 +66,9 @@ class Import_From_Hawthorne_Admin {
 	 * @since    1.0.0
 	 */
 	public function hawthorne_admin_enqueue_scripts_callback() {
+		$post_type          = filter_input( INPUT_GET, 'post_type', FILTER_SANITIZE_STRING );
+		$show_import_button = 'yes';
+
 		// Custom admin style.
 		wp_enqueue_style(
 			$this->plugin_name,
@@ -84,6 +87,16 @@ class Import_From_Hawthorne_Admin {
 			true
 		);
 
+		// Check if there are settings saved and we need to display the import button.
+		if ( ! is_null( $post_type ) && 'product' === $post_type ) {
+			// Fetch the settings.
+			$api_key            = hawthorne_get_plugin_settings( 'api_key' );
+			$api_secret_key     = hawthorne_get_plugin_settings( 'api_secret_key' );
+			$products_endpoint  = hawthorne_get_plugin_settings( 'products_endpoint' );
+			$show_import_button = ( empty( $api_key ) || empty( $api_secret_key ) || empty( $products_endpoint ) ) ? 'no' : $show_import_button;
+		}
+
+
 		// Localize custom admin script.
 		wp_localize_script(
 			$this->plugin_name,
@@ -92,6 +105,7 @@ class Import_From_Hawthorne_Admin {
 				'ajaxurl'                    => admin_url( 'admin-ajax.php' ),
 				'product_import_button_text' => __( 'Import From Hawthorne', 'import-from-hawthorne' ),
 				'product_import_admin_url'   => admin_url( 'admin.php?page=import-products-from-hawthorne' ),
+				'show_import_button'         => $show_import_button,
 			)
 		);
 	}

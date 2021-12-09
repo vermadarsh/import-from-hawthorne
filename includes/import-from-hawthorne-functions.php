@@ -195,6 +195,25 @@ if ( ! function_exists( 'hawthorne_get_current_datetime' ) ) {
 /**
  * Check, if the function exists.
  */
+if ( ! function_exists( 'hawthorne_product_exists' ) ) {
+	/**
+	 * Check if the product exists by part ID received from Hawthorne.
+	 *
+	 * @param string $part_id Part ID received from hawthorne.
+	 * @return boolean|int
+	 */
+	function hawthorne_product_exists( $part_id ) {
+		global $wpdb;
+		$product_id_query = "SELECT `post_id` FROM `{$wpdb->postmeta}` WHERE `meta_key` = '_sku' AND `meta_value` = '{$part_id}'";
+		$product_id       = $wpdb->get_results( $product_id_query, ARRAY_A );
+
+		return ( ! empty( $product_id[0]['post_id'] ) ) ? (int) $product_id[0]['post_id'] : false;
+	}
+}
+
+/**
+ * Check, if the function exists.
+ */
 if ( ! function_exists( 'hawthorne_create_product' ) ) {
 	/**
 	 * Create new product and insert that into the database.

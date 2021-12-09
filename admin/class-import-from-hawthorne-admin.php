@@ -293,23 +293,24 @@ class Import_From_Hawthorne_Admin {
 
 		// Iterate through the loop to import the products.
 		foreach ( $chunk as $part ) {
-			$product_title = ( ! empty( $part['Name'] ) ) ? $part['Name'] : '';
+			$product_title        = ( ! empty( $part['Name'] ) ) ? $part['Name'] : '';
+			$product_id_hawthorne = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
 
-			// Skip the update if the product title is missing.
-			if ( empty( $product_title ) ) {
+			// Skip the update if the product title or part id is missing.
+			if ( empty( $product_title ) || empty( $product_id_hawthorne ) ) {
 				$products_import_failed++; // Increase the count of products import.
 				continue;
 			}
 
 			// Check if the product exists with the name.
-			$product_exists = get_page_by_title( $product_title, OBJECT, 'product' );
+			$product_exists = hawthorne_product_exists( $product_id_hawthorne );
 
 			// If the product doesn't exist.
-			if ( is_null( $product_exists ) ) {
+			if ( false === $product_exists ) {
 				$product_id = hawthorne_create_product( $product_title ); // Create product with title.
 				$new_products_added++; // Increase the counter of new product created.
 			} else {
-				$product_id = $product_exists->ID;
+				$product_id = $product_exists;
 				$old_products_updated++; // Increase the counter of old product updated.
 			}
 
@@ -484,18 +485,19 @@ class Import_From_Hawthorne_Admin {
 
 		// Iterate through the loop to import the products.
 		foreach ( $chunk as $part ) {
-			$part          = (array) $part; // Convert the data type from std class to array.
-			$product_title = ( ! empty( $part['Name'] ) ) ? $part['Name'] : '';
+			$part                 = (array) $part; // Convert the data type from std class to array.
+			$product_title        = ( ! empty( $part['Name'] ) ) ? $part['Name'] : '';
+			$product_id_hawthorne = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
 
-			// Skip the update if the product title is missing.
-			if ( empty( $product_title ) ) {
+			// Skip the update if the product title or part id is missing.
+			if ( empty( $product_title ) || empty( $product_id_hawthorne ) ) {
 				continue;
 			}
 
 			// Check if the product exists with the name.
-			$product_exists = get_page_by_title( $product_title, OBJECT, 'product' );
-			$product_id     = ( is_null( $product_exists ) ) ? hawthorne_create_product( $product_title ) : $product_exists->ID;
-			hawthorne_update_product( $product_exists->ID, $part ); // Update product.
+			$product_exists = hawthorne_product_exists( $product_id_hawthorne );
+			$product_id     = ( false === $product_exists ) ? hawthorne_create_product( $product_title ) : $product_exists;
+			hawthorne_update_product( $product_id, $part ); // Update product.
 		}
 
 		// Increase the page value.

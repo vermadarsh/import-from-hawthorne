@@ -96,6 +96,34 @@ class Import_From_Hawthorne_Public {
 	public function hawthorne_init_callback() {
 		// Register product brand taxonomy.
 		hawthorne_register_product_brand_taxonomy();
+
+		// Get media files for the part.
+		// $api_url = 'https://services.hawthornegc.com/v1/Media/HGC00006';
+		// $api_key           = hawthorne_get_plugin_settings( 'api_key' );
+		// $api_secret_key    = hawthorne_get_plugin_settings( 'api_secret_key' );
+		// $current_time      = gmdate( 'Y-m-d\TH:i:s\Z' );
+		// $api_args          = array(
+		// 	'headers'   => array_merge(
+		// 		array(
+		// 			'Content-Type' => 'application/json',
+		// 		)
+		// 	),
+		// 	'sslverify' => false,
+		// 	'timeout'   => 600,
+		// 	'body'      => array(
+		// 		'format'    => 'json',
+		// 		'X-ApiKey'  => $api_key,
+		// 		'time'      => $current_time,
+		// 		'signature' => hawthorne_get_authentication_signature( $api_key, $api_secret_key, $api_url, $current_time ),
+		// 	),
+		// );
+
+		// $api_response      = wp_remote_get( $api_url, $api_args ); // Shoot the API.
+		// $api_response_code = wp_remote_retrieve_response_code( $api_response ); // Get the response code.
+		// $api_response_body = wp_remote_retrieve_body( $api_response ); // Get the response body.
+
+		// var_dump( $api_url, $api_response_code, $api_response_body );
+		// die;
 	}
 
 	/**

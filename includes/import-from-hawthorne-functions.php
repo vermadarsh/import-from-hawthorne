@@ -225,11 +225,12 @@ if ( ! function_exists( 'hawthorne_create_product' ) ) {
 		// Save the product post object in the database and return the product ID.
 		return wp_insert_post(
 			array(
-				'post_title'  => $product_title,
-				'post_status' => 'publish',
-				'post_author' => 1,
-				'post_date'   => gmdate( 'Y-m-d H:i:s' ),
-				'post_type'   => 'product',
+				'post_title'    => $product_title,
+				'post_status'   => 'publish',
+				'post_author'   => 1,
+				'post_date'     => gmdate( 'Y-m-d H:i:s' ),
+				'post_modified' => gmdate( 'Y-m-d H:i:s' ),
+				'post_type'     => 'product',
 			)
 		);
 	}
@@ -311,8 +312,8 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 		$wpdb->update(
 			$wpdb->posts,
 			array(
-				'post_content' => $content,
-				'post_date'    => $published_date,
+				'post_content'  => $content,
+				'post_modified' => gmdate( 'Y-m-d H:i:s' ),
 			),
 			array(
 				'ID' => $existing_product_id,
@@ -494,28 +495,28 @@ if ( ! function_exists( 'hawthorne_register_product_brand_taxonomy' ) ) {
 	 * This function registers product brand taxonomy.
 	 */
 	function hawthorne_register_product_brand_taxonomy() {
-		$labels = array(
-			'name'              => _x( 'Brands', 'taxonomy general name', 'import-from-hawthorne' ),
-			'singular_name'     => _x( 'Brand', 'taxonomy singular name', 'import-from-hawthorne' ),
-			'search_items'      => __( 'Search Brand', 'import-from-hawthorne' ),
-			'all_items'         => __( 'All Brands', 'import-from-hawthorne' ),
-			'parent_item'       => __( 'Parent Brand', 'import-from-hawthorne' ),
-			'parent_item_colon' => __( 'Parent Brand:', 'import-from-hawthorne' ),
-			'edit_item'         => __( 'Edit Brand', 'import-from-hawthorne' ),
-			'update_item'       => __( 'Update Brand', 'import-from-hawthorne' ),
-			'add_new_item'      => __( 'Add New Brand', 'import-from-hawthorne' ),
-			'new_item_name'     => __( 'New Brand Name', 'import-from-hawthorne' ),
-			'menu_name'         => __( 'Brands', 'import-from-hawthorne' ),
-		);
-
 		$args = array(
-			'hierarchical'      => true,
-			'labels'            => $labels,
-			'show_ui'           => true,
-			'show_in_menu'      => true,
-			'show_admin_column' => true,
-			'query_var'         => true,
-			'rewrite'           => array( 'slug' => 'product_brand' ),
+			'hierarchical'       => true,
+			'labels'             => array(
+				'name'              => _x( 'Brands', 'taxonomy general name', 'import-from-hawthorne' ),
+				'singular_name'     => _x( 'Brand', 'taxonomy singular name', 'import-from-hawthorne' ),
+				'search_items'      => __( 'Search Brand', 'import-from-hawthorne' ),
+				'all_items'         => __( 'All Brands', 'import-from-hawthorne' ),
+				'parent_item'       => __( 'Parent Brand', 'import-from-hawthorne' ),
+				'parent_item_colon' => __( 'Parent Brand:', 'import-from-hawthorne' ),
+				'edit_item'         => __( 'Edit Brand', 'import-from-hawthorne' ),
+				'update_item'       => __( 'Update Brand', 'import-from-hawthorne' ),
+				'add_new_item'      => __( 'Add New Brand', 'import-from-hawthorne' ),
+				'new_item_name'     => __( 'New Brand Name', 'import-from-hawthorne' ),
+				'menu_name'         => __( 'Brands', 'import-from-hawthorne' ),
+			),
+			'show_ui'            => true,
+			'show_in_menu'       => true,
+			'show_admin_column'  => true,
+			'public'             => true,
+			'publicly_queryable' => true,
+			'query_var'          => true,
+			'rewrite'            => array( 'slug' => 'product_brand' ),
 		);
 
 		register_taxonomy( 'product_brand', array( 'product' ), $args );

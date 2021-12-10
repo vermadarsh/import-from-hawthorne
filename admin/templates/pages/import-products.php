@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 $products = get_transient( 'hawthorne_product_items' );
 
 // See if there are products in the transient.
-if ( false === $products ) {
+if ( false === $products || empty( $products ) ) {
 	$products = hawthorne_fetch_products(); // Shoot the API to get products.
 
 	/**

@@ -270,7 +270,7 @@ class Import_From_Hawthorne_Admin {
 
 		// Fetch products.
 		$products       = get_transient( 'hawthorne_product_items' );
-		$products       = json_decode( $products, true ); // Decode the JSON.
+		$products       = json_decode( $products, true );
 		$products_count = count( $products );
 		$products       = array_chunk( $products, 10, true ); // Divide the complete data into 10 products.
 		$chunk_index    = $page - 1;

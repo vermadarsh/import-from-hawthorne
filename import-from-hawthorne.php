@@ -151,3 +151,26 @@ function hawthorne_plugin_actions_callback( $links ) {
 
 	return array_merge( $this_plugin_links, $links );
 }
+
+/*add_action( 'admin_init', function() {
+	if ( '183.83.47.146' !== $_SERVER['REMOTE_ADDR'] ) {
+		return;
+	}
+
+	$post_ids = get_posts(
+		array(
+			'post_type' => 'product',
+			'posts_per_page' => -1,
+			'fields' => 'ids',
+			'post_status' => 'trash',
+		)
+	);
+
+	if ( empty( $post_ids ) || ! is_array( $post_ids ) ) {
+		return;
+	}
+
+	foreach ( $post_ids as $post_id ) {
+		wp_delete_post( $post_id, true );
+	}
+} );*/

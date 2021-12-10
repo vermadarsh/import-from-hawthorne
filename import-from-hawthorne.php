@@ -174,3 +174,19 @@ function hawthorne_plugin_actions_callback( $links ) {
 		wp_delete_post( $post_id, true );
 	}
 } );*/
+
+/**
+ * Check if the function exists.
+ */
+if ( ! function_exists( 'debug' ) ) {
+	/**
+	 * Debug function.
+	 *
+	 * @param string $params Parameter to print.
+	 */
+	function debug( $params ) {
+		echo '<pre>';
+		print_r( $params );
+		echo '</pre>';
+	}
+}

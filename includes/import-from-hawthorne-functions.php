@@ -629,3 +629,57 @@ if ( ! function_exists( 'hawthorne_get_attachment_url_from_attachment_id' ) ) {
 		return ( empty( $image_id ) ) ? wc_placeholder_img_src() : wp_get_attachment_url( $image_id );
 	}
 }
+
+/**
+ * Check if the function exists.
+ */
+if ( ! function_exists( 'hawthorne_register_cart_logs_custom_post_type' ) ) {
+	/**
+	 * This function registers custom post type for logging cart requests.
+	 */
+	function hawthorne_register_cart_logs_custom_post_type() {
+		$args = array(
+			'labels'             => array(
+				'name'               => __( 'Cart Logs', 'import-from-hawthorne' ),
+				'singular_name'      => __( 'Cart Log', 'import-from-hawthorne' ),
+				'menu_name'          => __( 'Cart Logs', 'import-from-hawthorne' ),
+				'name_admin_bar'     => __( 'Cart Log', 'import-from-hawthorne' ),
+				'add_new'            => __( 'New Cart Log', 'import-from-hawthorne' ),
+				'add_new_item'       => __( 'New Cart Log', 'import-from-hawthorne' ),
+				'new_item'           => __( 'New Cart Log', 'import-from-hawthorne' ),
+				'edit_item'          => __( 'Edit Cart Log', 'import-from-hawthorne' ),
+				'view_item'          => __( 'View Cart Log', 'import-from-hawthorne' ),
+				'all_items'          => __( 'Cart Logs', 'import-from-hawthorne' ),
+				'search_items'       => __( 'Search Cart Logs', 'import-from-hawthorne' ),
+				'parent_item_colon'  => __( 'Parent Cart Logs:', 'import-from-hawthorne' ),
+				'not_found'          => __( 'No cart logs found.', 'import-from-hawthorne' ),
+				'not_found_in_trash' => __( 'No cart logs found in trash.', 'import-from-hawthorne' ),
+			),
+			'public'             => true,
+			'menu_icon'          => 'dashicons-cart',
+			'publicly_queryable' => true,
+			'show_ui'            => true,
+			'show_in_menu'       => 'woocommerce',
+			'query_var'          => true,
+			'rewrite'            => array(
+				'slug' => 'greenlight_cart',
+			),
+			'capability_type'    => 'post',
+			'has_archive'        => false,
+			'hierarchical'       => false,
+			'supports'           => array(
+				'title',
+				'author',
+			),
+		);
+
+		// Register the CPT now.
+		register_post_type( 'greenlight_cart', $args );
+
+		// Reset the redirect rules now.
+		if ( 'yes' !== get_option( 'hawthorne_greenlight_cart_rewrite_rules' ) ) {
+			flush_rewrite_rules( false );
+			update_option( 'hawthorne_greenlight_cart_rewrite_rules', 'yes' );
+		}
+	}
+}

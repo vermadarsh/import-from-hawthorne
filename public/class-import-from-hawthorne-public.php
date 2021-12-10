@@ -97,6 +97,9 @@ class Import_From_Hawthorne_Public {
 		// Register product brand taxonomy.
 		hawthorne_register_product_brand_taxonomy();
 
+		// Register cart logs custom post type.
+		hawthorne_register_cart_logs_custom_post_type();
+
 		// Get media files for the part.
 		// $api_url = 'https://services.hawthornegc.com/v1/Media/HGC00006';
 		// $api_key           = hawthorne_get_plugin_settings( 'api_key' );
@@ -298,5 +301,35 @@ class Import_From_Hawthorne_Public {
 		}
 
 		return $product_attributes;
+	}
+
+	/**
+	 * Create a log in the admin about the cart request submitted.
+	 *
+	 * @param array $customer_details Customer details.
+	 * @param array $cart_items Cart items.
+	 * @param array $coupon_items Applied coupon items.
+	 * @param array $cart_totals Cart totals.
+	 * @since 1.0.0
+	 */
+	public function hawthorne_shoot_cart_to_greenlight_email_callback( $customer_details, $cart_items, $coupon_items, $cart_totals ) {
+		// Add the cart log into the database.
+		wp_insert_post(
+			array(
+				/* translators: 1: %s: sha conversion of time */
+				'post_title'    => sprintf( __( 'Cart Log %s', 'import-from-hawthorne' ), sha1( time() ) ),
+				'post_status'   => 'publish',
+				'post_author'   => 1,
+				'post_date'     => gmdate( 'Y-m-d H:i:s' ),
+				'post_modified' => gmdate( 'Y-m-d H:i:s' ),
+				'post_type'     => 'greenlight_cart',
+				'meta_input'    => array(
+					'customer_details' => $customer_details,
+					'cart_items'       => $cart_items,
+					'coupon_items'     => $coupon_items,
+					'cart_totals'      => $cart_totals,
+				),
+			)
+		);
 	}
 }

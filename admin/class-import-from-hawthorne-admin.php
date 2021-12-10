@@ -506,4 +506,110 @@ class Import_From_Hawthorne_Admin {
 		// Call the function again to continue import.
 		self::hawthorne_import_products( $products, $page );
 	}
+
+	/**
+	 * Register custom metaboxes for showing cart logs details.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_add_meta_boxes_callback() {
+		$post_id = filter_input( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT );
+
+		/**
+		 * Add metaboxes to the greenlight cart logs.
+		 * Add metabox for showing the customer details.
+		 */
+		add_meta_box(
+			'hawthorne-greenlight-cart-customer-details',
+			__( 'Customer Details', 'import-from-hawthorne' ),
+			array( $this, 'hawthorne_greenlight_cart_customer_details_callback' ),
+			'greenlight_cart',
+			'normal',
+			'high',
+			array(
+				'post_id' => $post_id,
+			)
+		);
+
+		// Metabox for showing cart items.
+		add_meta_box(
+			'hawthorne-greenlight-cart-products-details',
+			__( 'Cart Items', 'import-from-hawthorne' ),
+			array( $this, 'hawthorne_greenlight_cart_products_details_callback' ),
+			'greenlight_cart',
+			'normal',
+			'high',
+			array(
+				'post_id' => $post_id,
+			)
+		);
+	}
+
+	/**
+	 * Callback function to show the customer details.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_greenlight_cart_customer_details_callback( $args ) {
+		$post_id = ! empty( $args->ID ) ? $args->ID : false;
+		$customer_details = get_post_meta( $post_id, 'customer_details', true );
+		?>
+		<table class="form-table hawthorne-cart-log-customer-data">
+			<tbody>
+				<!-- CUSTOMER FULL NAME -->
+				<tr>
+					<th scope="row"><label for="customer-name"><?php esc_html_e( 'Name', 'import-from-hawthorne' ); ?></label></th>
+					<td><?php echo ( ! empty( $customer_details['name'] ) ) ? $customer_details['name'] : '--'; ?></td>
+				</tr>
+
+				<!-- CUSTOMER EMAIL -->
+				<tr>
+					<th scope="row"><label for="customer-email"><?php esc_html_e( 'Email', 'import-from-hawthorne' ); ?></label></th>
+					<td><?php echo ( ! empty( $customer_details['email'] ) ) ? $customer_details['email'] : '--'; ?></td>
+				</tr>
+
+				<!-- CUSTOMER PHONE -->
+				<tr>
+					<th scope="row"><label for="customer-phone"><?php esc_html_e( 'Phone', 'import-from-hawthorne' ); ?></label></th>
+					<td><?php echo ( ! empty( $customer_details['phone'] ) ) ? $customer_details['phone'] : '--'; ?></td>
+				</tr>
+
+				<!-- CUSTOMER MESSAGE -->
+				<tr>
+					<th scope="row"><label for="customer-message"><?php esc_html_e( 'Message', 'import-from-hawthorne' ); ?></label></th>
+					<td><?php echo ( ! empty( $customer_details['message'] ) ) ? $customer_details['message'] : ''; ?></td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Callback function to show the cart items details.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_greenlight_cart_products_details_callback( $args ) {
+		$post_id = ! empty( $args->ID ) ? $args->ID : false;
+		$cart_items = get_post_meta( $post_id, 'cart_items', true );
+		$coupon_items = get_post_meta( $post_id, 'coupon_items', true );
+		$cart_totals = get_post_meta( $post_id, 'cart_totals', true );
+		debug( $cart_items );
+		debug( $coupon_items );
+		debug( $cart_totals );
+		?>
+		<table class="form-table hack-import-subscribers-table">
+			<tbody>
+				<!-- CUSTOMER FULL NAME -->
+				<tr>
+					<th scope="row"><label for="api-key"><?php esc_html_e( 'API Key', 'import-from-hawthorne' ); ?></label></th>
+					<td>
+						<input type="text" required id="api-key" name="api-key" placeholder="Ht**************" class="regular-text" value="<?php echo esc_html( $api_key ); ?>">
+						<p class="description"><?php esc_html_e( 'Hawthorne API key.', 'import-from-hawthorne' ); ?></p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
+	}
 }

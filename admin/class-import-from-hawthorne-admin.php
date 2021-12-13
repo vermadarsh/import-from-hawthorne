@@ -525,10 +525,7 @@ class Import_From_Hawthorne_Admin {
 			array( $this, 'hawthorne_greenlight_cart_customer_details_callback' ),
 			'greenlight_cart',
 			'normal',
-			'high',
-			array(
-				'post_id' => $post_id,
-			)
+			'high'
 		);
 
 		// Metabox for showing cart items.
@@ -538,10 +535,7 @@ class Import_From_Hawthorne_Admin {
 			array( $this, 'hawthorne_greenlight_cart_products_details_callback' ),
 			'greenlight_cart',
 			'normal',
-			'high',
-			array(
-				'post_id' => $post_id,
-			)
+			'high'
 		);
 	}
 
@@ -550,38 +544,8 @@ class Import_From_Hawthorne_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function hawthorne_greenlight_cart_customer_details_callback( $args ) {
-		$post_id = ! empty( $args->ID ) ? $args->ID : false;
-		$customer_details = get_post_meta( $post_id, 'customer_details', true );
-		?>
-		<table class="form-table hawthorne-cart-log-customer-data">
-			<tbody>
-				<!-- CUSTOMER FULL NAME -->
-				<tr>
-					<th scope="row"><label for="customer-name"><?php esc_html_e( 'Name', 'import-from-hawthorne' ); ?></label></th>
-					<td><?php echo ( ! empty( $customer_details['name'] ) ) ? $customer_details['name'] : '--'; ?></td>
-				</tr>
-
-				<!-- CUSTOMER EMAIL -->
-				<tr>
-					<th scope="row"><label for="customer-email"><?php esc_html_e( 'Email', 'import-from-hawthorne' ); ?></label></th>
-					<td><?php echo ( ! empty( $customer_details['email'] ) ) ? $customer_details['email'] : '--'; ?></td>
-				</tr>
-
-				<!-- CUSTOMER PHONE -->
-				<tr>
-					<th scope="row"><label for="customer-phone"><?php esc_html_e( 'Phone', 'import-from-hawthorne' ); ?></label></th>
-					<td><?php echo ( ! empty( $customer_details['phone'] ) ) ? $customer_details['phone'] : '--'; ?></td>
-				</tr>
-
-				<!-- CUSTOMER MESSAGE -->
-				<tr>
-					<th scope="row"><label for="customer-message"><?php esc_html_e( 'Message', 'import-from-hawthorne' ); ?></label></th>
-					<td><?php echo ( ! empty( $customer_details['message'] ) ) ? $customer_details['message'] : ''; ?></td>
-				</tr>
-			</tbody>
-		</table>
-		<?php
+	public function hawthorne_greenlight_cart_customer_details_callback() {
+		include 'templates/metaboxes/customer-details.php'; // Customer details template.
 	}
 
 	/**
@@ -589,68 +553,7 @@ class Import_From_Hawthorne_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function hawthorne_greenlight_cart_products_details_callback( $args ) {
-		$post_id = ! empty( $args->ID ) ? $args->ID : false;
-		$cart_items = get_post_meta( $post_id, 'cart_items', true );
-		$coupon_items = get_post_meta( $post_id, 'coupon_items', true );
-		$cart_totals = get_post_meta( $post_id, 'cart_totals', true );
-
-		// Render the cart items.
-		if ( empty( $cart_items ) || ! is_array( $cart_items ) ) {
-			?><p><?php esc_html_e( 'There are no cart items.', 'import-from-hawthorne' ); ?></p><?php
-		} else {
-			?>
-			<h3><?php esc_html_e( 'Cart Items', 'import-from-hawthorne' ); ?></h3>
-			<table class="form-table hawthorne-cart-log-product-data">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'Image', 'import-from-hawthorne' ); ?></th>
-						<th><?php esc_html_e( 'Title', 'import-from-hawthorne' ); ?></th>
-						<th><?php esc_html_e( 'Quantity', 'import-from-hawthorne' ); ?></th>
-						<th><?php esc_html_e( 'Subtotal', 'import-from-hawthorne' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ( $cart_items as $cart_item ) {?>
-						<!-- CART DATA -->
-						<tr>
-							<td>
-								<img width="25%" alt="<?php echo ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : ''; ?>" src="<?php echo esc_url( ( ! empty( $cart_item['image'] ) ) ? $cart_item['image'] : '' ); ?>" />
-							</td>
-							<td>
-								<a title="<?php echo ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : ''; ?>" href="<?php echo esc_url( ( ! empty( $cart_item['link'] ) ) ? $cart_item['link'] : '' ); ?>">
-									<?php echo ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : ''; ?>
-								</a>
-							</td>
-							<td><?php echo ( ! empty( $cart_item['quantity'] ) ) ? $cart_item['quantity'] : ''; ?></td>
-							<td><?php echo ( ! empty( $cart_item['subtotal'] ) ) ? wc_price( $cart_item['subtotal'] ) : ''; ?></td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-			<h3><?php esc_html_e( 'Cart Totals', 'import-from-hawthorne' ); ?></h3>
-			<table class="form-table hawthorne-cart-log-cart-total-data">
-				<tbody>
-					<!-- SUBTOTAL -->
-					<tr>
-						<th scope="row"><?php esc_html_e( 'Subtotal', 'import-from-hawthorne' ); ?></th>
-						<td><?php echo ( ! empty( $cart_totals['subtotal'] ) ) ? wc_price( $cart_totals['subtotal'] ) : ''; ?></td>
-					</tr>
-					<?php foreach ( $coupon_items as $coupon_code => $coupon_discount ) {?>
-						<!-- COUPON ITEMS -->
-						<tr>
-							<th scope="row"><?php echo sprintf( __( 'Coupon: %1$s', 'import-from-hawthorne' ), $coupon_code ); ?></th>
-							<td><?php echo '-' . ( ! empty( $coupon_discount ) ) ? wc_price( $coupon_discount ) : 0; ?></td>
-						</tr>
-					<?php } ?>
-					<!-- TOTAL -->
-					<tr>
-						<th scope="row"><?php esc_html_e( 'Total', 'import-from-hawthorne' ); ?></th>
-						<td><?php echo ( ! empty( $cart_totals['cart_contents_total'] ) ) ? wc_price( $cart_totals['cart_contents_total'] ) : ''; ?></td>
-					</tr>
-				</tbody>
-			</table>
-			<?php
-		}
+	public function hawthorne_greenlight_cart_products_details_callback() {
+		include 'templates/metaboxes/cart-details.php'; // Cart details template.
 	}
 }

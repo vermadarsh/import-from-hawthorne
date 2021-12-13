@@ -1,39 +1,53 @@
 <?php
-$post_id      = filter_input( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT );
-$cart_items   = get_post_meta( $post_id, 'cart_items', true );
-$coupon_items = get_post_meta( $post_id, 'coupon_items', true );
-$cart_totals  = get_post_meta( $post_id, 'cart_totals', true );
+/**
+ * This file is used for templating the cart items and totals.
+ *
+ * @since 1.0.0
+ * @package Import_From_Hawthorne
+ * @subpackage Import_From_Hawthorne/admin/templates/metaboxes
+ */
+
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
+$postid       = filter_input( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT );
+$cart_items   = get_post_meta( $postid, 'cart_items', true );
+$coupon_items = get_post_meta( $postid, 'coupon_items', true );
+$cart_totals  = get_post_meta( $postid, 'cart_totals', true );
 
 // Render the cart items.
 if ( empty( $cart_items ) || ! is_array( $cart_items ) ) {
-	?><p><?php esc_html_e( 'There are no cart items.', 'import-from-hawthorne' ); ?></p><?php
+	?>
+	<p><?php esc_html_e( 'There are no cart items.', 'import-from-hawthorne' ); ?></p>
+	<?php
 } else {
 	?>
 	<div class="hawthorne-cart-log-product-data-wrap">
-		<!-- <h3><?php // esc_html_e( 'Cart Items', 'import-from-hawthorne' ); ?></h3> -->
 		<table class="form-table hawthorne-cart-log-product-data">
 			<thead>
 				<tr>
 					<th><?php esc_html_e( 'Image', 'import-from-hawthorne' ); ?></th>
 					<th><?php esc_html_e( 'Title', 'import-from-hawthorne' ); ?></th>
-					<!-- <th><?php // esc_html_e( 'Quantity', 'import-from-hawthorne' ); ?></th> -->
 					<th><?php esc_html_e( 'Subtotal', 'import-from-hawthorne' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ( $cart_items as $cart_item ) {?>
+				<?php
+				// Iterate through the cart items.
+				foreach ( $cart_items as $cart_item ) {
+					$product_quantity = ( ! empty( $cart_item['quantity'] ) ) ? $cart_item['quantity'] : '';
+					?>
 					<!-- CART DATA -->
 					<tr>
 						<td>
-							<img width="25%" alt="<?php echo ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : ''; ?>" src="<?php echo esc_url( ( ! empty( $cart_item['image'] ) ) ? $cart_item['image'] : '' ); ?>" />
+							<img width="25%" alt="<?php echo esc_attr( ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : '' ); ?>" src="<?php echo esc_url( ( ! empty( $cart_item['image'] ) ) ? $cart_item['image'] : '' ); ?>" />
 						</td>
 						<td>
-							<a title="<?php echo ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : ''; ?>" href="<?php echo esc_url( ( ! empty( $cart_item['link'] ) ) ? $cart_item['link'] : '' ); ?>">
-								<?php echo ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : ''; ?>
+							<a title="<?php echo esc_attr( ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : '' ); ?>" href="<?php echo esc_url( ( ! empty( $cart_item['link'] ) ) ? $cart_item['link'] : '' ); ?>">
+								<?php echo esc_html( ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : '' ); ?>
 							</a>
+							<p><?php echo esc_html( sprintf( __( 'Quantity: %1$s', 'import-from-hawthorne' ), $product_quantity ) ); ?></p>
 						</td>
-						<!-- <td><?php // echo ( ! empty( $cart_item['quantity'] ) ) ? $cart_item['quantity'] : ''; ?></td> -->
-						<td><?php echo ( ! empty( $cart_item['subtotal'] ) ) ? wc_price( $cart_item['subtotal'] ) : ''; ?></td>
+						<td><?php echo wp_kses_post( ( ! empty( $cart_item['subtotal'] ) ) ? wc_price( $cart_item['subtotal'] ) : '' ); ?></td>
 					</tr>
 				<?php } ?>
 			</tbody>

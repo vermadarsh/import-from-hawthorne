@@ -556,4 +556,142 @@ class Import_From_Hawthorne_Admin {
 	public function hawthorne_greenlight_cart_products_details_callback() {
 		include 'templates/metaboxes/cart-details.php'; // Cart details template.
 	}
+
+	/**
+	 * Add custom columns to the cart logs admin list.
+	 *
+	 * @param array $columns Columns array.
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function hawthorne_manage_greenlight_cart_posts_columns_callback( $columns ) {
+		$columns['customer']       = __( 'Customer', 'import-from-hawthorne' );
+		$columns['cart_items']     = __( 'Cart Items', 'import-from-hawthorne' );
+		$columns['cart_totals']    = __( 'Cart Totals', 'import-from-hawthorne' );
+
+		return $columns;
+	}
+
+	/**
+	 * Add custom data to the custom columns.
+	 *
+	 * @param string $column Columns key.
+	 * @param int    $post_id Post ID.
+	 * @since 1.0.0
+	 */
+	public function hawthorne_manage_greenlight_cart_posts_custom_column_callback( $column, $post_id ) {
+		$customer_details = get_post_meta( $post_id, 'customer_details', true );
+		$cart_items       = get_post_meta( $post_id, 'cart_items', true );
+		$coupon_items     = get_post_meta( $post_id, 'coupon_items', true );
+		$cart_totals      = get_post_meta( $post_id, 'cart_totals', true );
+
+		// If it's the customer's information column.
+		if ( 'customer' === $column ) {
+			echo wp_kses_post(
+				sprintf(
+					__(
+						'%1$s%3$sName: %4$s%5$s%2$s%1$s%3$sEmail: %4$s%6$s%2$s%1$s%3$sPhone: %4$s%7$s%2$s%1$s%3$sMessage: %4$s%8$s%2$s',
+						'import-from-hawthorne'
+					),
+					'<p>',
+					'</p>',
+					'<strong>',
+					'</strong>',
+					( ! empty( $customer_details['name'] ) ) ? $customer_details['name'] : '--',
+					( ! empty( $customer_details['email'] ) ) ? $customer_details['email'] : '--',
+					( ! empty( $customer_details['phone'] ) ) ? $customer_details['phone'] : '--',
+					( ! empty( $customer_details['message'] ) ) ? $customer_details['message'] : '--',
+				)
+			);
+		} elseif ( 'cart_items' === $column ) {
+			// Check if there are cart items present.
+			if ( ! empty( $cart_items ) && is_array( $cart_items ) ) {
+				// Iterate through the cart items to display them.
+				foreach ( $cart_items as $cart_item ) {
+					$product_id = ( ! empty( $cart_item['id'] ) ) ? $cart_item['id'] : '';
+
+					// Skip, if the ID is not available.
+					if ( empty( $product_id ) ) {
+						continue;
+					}
+
+					// Get the other details.
+					$product_name      = ( ! empty( $cart_item['name'] ) ) ? $cart_item['name'] : '';
+					$product_quantity  = ( ! empty( $cart_item['quantity'] ) ) ? $cart_item['quantity'] : '';
+					$product_subtotal  = ( ! empty( $cart_item['subtotal'] ) ) ? $cart_item['subtotal'] : '';
+					$product_edit_link = get_edit_post_link( $product_id, '&' );
+
+					?>
+					<p>
+						<strong>
+							<a href="<?php echo esc_url( $product_edit_link ); ?>" title="<?php echo $product_name; ?>">
+								<?php echo $product_name; ?>
+							</a>
+						</strong> * 
+						<strong><?php echo esc_html( $product_quantity ); ?></strong> = 
+						<strong><?php echo wp_kses_post( wc_price( $product_subtotal ) ); ?></strong>
+					</p>
+					<?php
+				}
+			}
+		} elseif ( 'cart_totals' === $column ) {
+			?>
+			<!-- CART SUBTOTAL -->
+			<p>
+				<?php
+				echo wp_kses_post(
+					sprintf(
+						__(
+							'%1$sSubtotal: %3$s%2$s',
+							'import-from-hawthorne'
+						),
+						'<strong>',
+						'</strong>',
+						( ! empty( $cart_totals['subtotal'] ) ) ? wc_price( $cart_totals['subtotal'] ) : ''
+					)
+				);
+				?>
+			</p>
+			<!-- DISCOUNTS -->
+			<?php
+			// If the discounts are available.
+			if ( ! empty( $coupon_items ) && is_array( $coupon_items ) ) {
+				// Iterate through the coupon items.
+				foreach ( $coupon_items as $coupon_code => $coupon_discount ) {
+					echo wp_kses_post(
+						sprintf(
+							__(
+								'%1$s%3$sCoupon (%5$s): -%6$s%2$s',
+								'import-from-hawthorne'
+							),
+							'<p>',
+							'</p>',
+							'<strong>',
+							'</strong>',
+							$coupon_code,
+							wc_price( $coupon_discount )
+						)
+					);
+				}
+			}
+			?>
+			<!-- CART TOTAL -->
+			<p>
+				<?php
+				echo wp_kses_post(
+					sprintf(
+						__(
+							'%1$sTotal: %3$s%2$s',
+							'import-from-hawthorne'
+						),
+						'<strong>',
+						'</strong>',
+						( ! empty( $cart_totals['cart_contents_total'] ) ) ? wc_price( $cart_totals['cart_contents_total'] ) : ''
+					)
+				);
+				?>
+			</p>
+			<?php
+		}
+	}
 }

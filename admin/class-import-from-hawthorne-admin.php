@@ -410,6 +410,29 @@ class Import_From_Hawthorne_Admin {
 	}
 
 	/**
+	 * Add custom fields in the pricing section, the data of which is provided by Hawthorne.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_product_options_pricing_callback() {
+		$product_id = get_the_ID();
+
+		// Unit price field.
+		woocommerce_wp_text_input(
+			array(
+				'id'          => '_unit_price',
+				'value'       => get_post_meta( $product_id, '_unit_price', true ),
+				'label'       => __( 'Unit Price', 'import-from-hawthorne' ),
+				'placeholder' => '',
+				'desc_tip'    => true,
+				'description' => __( 'Product\'s unit price. This data is provided by Hawthorne.', 'import-from-hawthorne' ),
+				'type'        => 'text',
+				'data_type'   => 'decimal',
+			)
+		);
+	}
+
+	/**
 	 * Update product custom meta details.
 	 *
 	 * @param int $product_id Holds the product ID.
@@ -420,6 +443,7 @@ class Import_From_Hawthorne_Admin {
 		$dim_weight = filter_input( INPUT_POST, '_dim_weight', FILTER_SANITIZE_STRING );
 		$volume     = filter_input( INPUT_POST, '_volume', FILTER_SANITIZE_STRING );
 		$upc        = filter_input( INPUT_POST, '_upc', FILTER_SANITIZE_STRING );
+		$unit_price = filter_input( INPUT_POST, '_unit_price', FILTER_SANITIZE_STRING );
 
 		// If product dim. weight is available.
 		if ( ! empty( $dim_weight ) ) {
@@ -440,6 +464,13 @@ class Import_From_Hawthorne_Admin {
 			update_post_meta( $product_id, '_upc', $upc );
 		} else {
 			delete_post_meta( $product_id, '_upc' );
+		}
+
+		// If product unit price is available.
+		if ( ! empty( $unit_price ) ) {
+			update_post_meta( $product_id, '_unit_price', $unit_price );
+		} else {
+			delete_post_meta( $product_id, '_unit_price' );
 		}
 	}
 

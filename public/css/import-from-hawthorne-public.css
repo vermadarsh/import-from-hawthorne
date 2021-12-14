@@ -476,4 +476,16 @@ a.close.disabled {
   pointer-events: none !important;
 }
 
+.hawthorne-product-unit-price,
+.hawthorne-product-msrp {
+  color: #454545 !important;
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.hawthorne-product-unit-price span,
+.hawthorne-product-msrp span {
+  color: #66c821 !important;
+}
+
 /* end */

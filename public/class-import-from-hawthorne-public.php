@@ -47,8 +47,15 @@ class Import_From_Hawthorne_Public {
 	 * @since    1.0.0
 	 */
 	public function hawthorne_wp_enqueue_scripts_callback() {
-		// Return if it's not the cart page.
-		if ( ! is_cart() ) {
+		$enqueue_scripts = false;
+
+		// Enqueue scripts only on selected pages.
+		if ( is_cart() || is_tax( 'product_cat' ) || is_tax( 'product_brand' ) || is_product() ) {
+			$enqueue_scripts = true;
+		}
+
+		// Return, if scripts are not to be enqueued.
+		if ( false === $enqueue_scripts ) {
 			return;
 		}
 
@@ -331,5 +338,65 @@ class Import_From_Hawthorne_Public {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Manage the product structure on the WooCommerce archive pages.
+	 *
+	 * @param array $product_structure Product structure.
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public function hawthorne_astra_woo_shop_product_structure_callback( $product_structure ) {
+		// Check if we can find the price in the structure.
+		$price_index = array_search( 'price', $product_structure, true );
+
+		// Return, if the index is not there.
+		if ( false === $price_index ) {
+			return $product_structure;
+		}
+
+		// Remove the price from the structure.
+		unset( $product_structure[ $price_index ] );
+
+		return $product_structure;
+	}
+
+	/**
+	 * Show the MSRP and the unit price on the archive pages.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_astra_woo_shop_rating_after_callback() {
+		$product_id       = get_the_ID();
+		$is_quest_branded = has_term( 'quest', 'product_brand', $product_id );
+		$msrp             = get_post_meta( $product_id, '_price', true );
+		$unit_price       = get_post_meta( $product_id, '_unit_price', true );
+		$unit_price       = ( $is_quest_branded ) ? __( 'Price too low to advertise. Contact us for the Greenlight price.', 'import-from-hawthorne' ) : wc_price( $unit_price );
+
+		// Show the prices now.
+		?>
+		<h6 class="hawthorne-product-msrp"><?php echo sprintf( __( 'MSRP: %1$s', 'import-from-hawthorne' ), wc_price( $msrp ) ); ?></h6>
+		<h6 class="hawthorne-product-unit-price"><?php echo sprintf( __( 'Unit Price: %1$s', 'import-from-hawthorne' ), $unit_price ); ?></h6>
+		<?php
+	}
+
+	/**
+	 * Show the MSRP and the unit price on the archive pages.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_woocommerce_single_product_summary_callback() {
+		$product_id       = get_the_ID();
+		$is_quest_branded = has_term( 'quest', 'product_brand', $product_id );
+		$msrp             = get_post_meta( $product_id, '_price', true );
+		$unit_price       = get_post_meta( $product_id, '_unit_price', true );
+		$unit_price       = ( $is_quest_branded ) ? __( 'Price too low to advertise. Contact us for the Greenlight price.', 'import-from-hawthorne' ) : wc_price( $unit_price );
+
+		// Show the prices now.
+		?>
+		<h6 class="hawthorne-product-msrp"><?php echo sprintf( __( 'MSRP: %1$s', 'import-from-hawthorne' ), wc_price( $msrp ) ); ?></h6>
+		<h6 class="hawthorne-product-unit-price"><?php echo sprintf( __( 'Unit Price: %1$s', 'import-from-hawthorne' ), $unit_price ); ?></h6>
+		<?php
 	}
 }

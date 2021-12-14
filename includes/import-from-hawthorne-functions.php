@@ -9,9 +9,10 @@
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-// Remove cart page actions to replace the button, "Proceed to Checkout".
-remove_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20 );
-remove_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_proceed_to_checkout', 20 );
+// Remove actions.
+remove_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20 ); // Remove cart page actions to replace the button, "Proceed to Checkout".
+remove_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_proceed_to_checkout', 20 ); // Remove cart page actions to replace the button, "Proceed to Checkout".
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price', 10 ); // Hide the product price from the product details page.
 
 /**
  * Check, if the function exists.
@@ -249,9 +250,10 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 	 */
 	function hawthorne_update_product( $existing_product_id, $part ) {
 		global $wpdb;
-		$sku     = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
-		$msrp    = ( ! empty( $part['EachMsrp'] ) ) ? $part['EachMsrp'] : '';
-		$content = ( ! empty( $part['Description'] ) ) ? $part['Description'] : '';
+		$sku        = ( ! empty( $part['Id'] ) ) ? $part['Id'] : '';
+		$msrp       = ( ! empty( $part['EachMsrp'] ) ) ? $part['EachMsrp'] : '';
+		$unit_price = ( ! empty( $part['EachPrice'] ) ) ? $part['EachPrice'] : '';
+		$content    = ( ! empty( $part['Description'] ) ) ? $part['Description'] : '';
 
 		// Category data.
 		$hawthorne_category_id     = ( ! empty( $part['CategoryId'] ) ) ? $part['CategoryId'] : '';
@@ -300,6 +302,7 @@ if ( ! function_exists( 'hawthorne_update_product' ) ) {
 		update_post_meta( $existing_product_id, '_sku', $sku );
 		update_post_meta( $existing_product_id, '_regular_price', $msrp );
 		update_post_meta( $existing_product_id, '_price', $msrp );
+		update_post_meta( $existing_product_id, '_unit_price', $unit_price );
 		update_post_meta( $existing_product_id, '_height', $product_height );
 		update_post_meta( $existing_product_id, '_width', $product_width );
 		update_post_meta( $existing_product_id, '_length', $product_length );

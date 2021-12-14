@@ -147,6 +147,7 @@ class Import_From_Hawthorne {
 		$this->loader->add_filter( 'parent_file', $plugin_admin, 'hawthorne_parent_file_callback' );
 		$this->loader->add_action( 'woocommerce_product_options_dimensions', $plugin_admin, 'hawthorne_woocommerce_product_options_dimensions_callback' );
 		$this->loader->add_action( 'woocommerce_product_options_sku', $plugin_admin, 'hawthorne_woocommerce_product_options_sku_callback' );
+		$this->loader->add_action( 'woocommerce_product_options_pricing', $plugin_admin, 'hawthorne_woocommerce_product_options_pricing_callback' );
 		$this->loader->add_action( 'woocommerce_process_product_meta', $plugin_admin, 'hawthorne_woocommerce_process_product_meta_callback' );
 		$this->loader->add_action( 'hawthorne_import_products_cron', $plugin_admin, 'hawthorne_hawthorne_import_products_cron_callback' );
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'hawthorne_add_meta_boxes_callback' );
@@ -174,6 +175,9 @@ class Import_From_Hawthorne {
 		$this->loader->add_filter( 'woocommerce_product_add_to_cart_text', $plugin_public, 'hawthorne_woocommerce_product_add_to_cart_text_callback', 20 );
 		$this->loader->add_filter( 'woocommerce_display_product_attributes', $plugin_public, 'hawthorne_woocommerce_display_product_attributes_callback', 20, 2 );
 		$this->loader->add_action( 'shoot_cart_to_greenlight_email', $plugin_public, 'hawthorne_shoot_cart_to_greenlight_email_callback', 20, 4 );
+		$this->loader->add_filter( 'astra_woo_shop_product_structure', $plugin_public, 'hawthorne_astra_woo_shop_product_structure_callback' );
+		$this->loader->add_action( 'astra_woo_shop_rating_after', $plugin_public, 'hawthorne_astra_woo_shop_rating_after_callback' );
+		$this->loader->add_action( 'woocommerce_single_product_summary', $plugin_public, 'hawthorne_woocommerce_single_product_summary_callback', 20 );
 	}
 
 	/**

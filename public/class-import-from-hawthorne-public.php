@@ -377,7 +377,7 @@ class Import_From_Hawthorne_Public {
 		// Show the prices now.
 		?>
 		<h6 class="hawthorne-product-msrp"><?php echo sprintf( __( 'MSRP: %1$s', 'import-from-hawthorne' ), wc_price( $msrp ) ); ?></h6>
-		<h6 class="hawthorne-product-unit-price"><?php echo sprintf( __( 'Unit Price: %1$s', 'import-from-hawthorne' ), $unit_price ); ?></h6>
+		<h6 class="hawthorne-product-unit-price"><?php echo sprintf( __( 'Greenlight Price: %1$s', 'import-from-hawthorne' ), $unit_price ); ?></h6>
 		<?php
 	}
 
@@ -396,7 +396,7 @@ class Import_From_Hawthorne_Public {
 		// Show the prices now.
 		?>
 		<h6 class="hawthorne-product-msrp"><?php echo sprintf( __( 'MSRP: %1$s', 'import-from-hawthorne' ), wc_price( $msrp ) ); ?></h6>
-		<h6 class="hawthorne-product-unit-price"><?php echo sprintf( __( 'Unit Price: %1$s', 'import-from-hawthorne' ), $unit_price ); ?></h6>
+		<h6 class="hawthorne-product-unit-price"><?php echo sprintf( __( 'Greenlight Price: %1$s', 'import-from-hawthorne' ), $unit_price ); ?></h6>
 		<?php
 	}
 }

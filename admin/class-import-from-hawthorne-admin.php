@@ -422,7 +422,7 @@ class Import_From_Hawthorne_Admin {
 			array(
 				'id'          => '_unit_price',
 				'value'       => get_post_meta( $product_id, '_unit_price', true ),
-				'label'       => __( 'Unit Price', 'import-from-hawthorne' ),
+				'label'       => __( 'Greenlight price', 'import-from-hawthorne' ) . ' (' . get_woocommerce_currency_symbol() . ')',
 				'placeholder' => '',
 				'desc_tip'    => true,
 				'description' => __( 'Product\'s unit price. This data is provided by Hawthorne.', 'import-from-hawthorne' ),

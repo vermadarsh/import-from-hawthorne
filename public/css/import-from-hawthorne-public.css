@@ -480,7 +480,11 @@ a.close.disabled {
 .hawthorne-product-msrp {
   color: #454545 !important;
   font-weight: 700;
-  font-size: 0.9em;
+  font-size: 1.1em;
+}
+
+.hawthorne-product-unit-price {
+  font-size: 1.5em;
 }
 
 .hawthorne-product-unit-price span,

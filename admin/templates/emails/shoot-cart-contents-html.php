@@ -1,6 +1,6 @@
 <?php
 /**
- * Reservation reminder email.
+ * Cart contents email template.
  *
  * @package Import_From_Hawthorne
  * @subpackage Import_From_Hawthorne/admin/templates/emails

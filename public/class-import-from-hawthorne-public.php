@@ -399,4 +399,23 @@ class Import_From_Hawthorne_Public {
 		<h6 class="hawthorne-product-unit-price"><?php echo sprintf( __( 'Greenlight Price: %1$s', 'import-from-hawthorne' ), $unit_price ); ?></h6>
 		<?php
 	}
+
+	/**
+	 * Setup the cron to delete the log files from the uploads folder.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_hawthorne_import_products_comparison_log_deletion_cron_callback() {
+		$log_files = glob( HAWTHORNE_LOG_DIR_PATH . 'import-log-*.log' );
+
+		// Return, if there are no log files to delete.
+		if ( empty( $log_files ) ) {
+			return;
+		}
+
+		// Loop in through the files to unlink each of them.
+		foreach ( $log_files as $log_file ) {
+			unlink( $log_file );
+		}
+	}
 }

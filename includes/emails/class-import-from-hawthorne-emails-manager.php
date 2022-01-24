@@ -30,6 +30,7 @@ class Import_From_Hawthorne_Emails_Manager {
 	public function __construct() {
 		define( 'HAWTHORNE_EMAIL_TEMPLATE_PATH', HAWTHORNE_PLUGIN_PATH . 'admin/templates/emails/' );
 		add_action( 'shoot_cart_to_greenlight_email', array( &$this, 'hawthorne_shoot_cart_to_greenlight_email_callback' ), 10, 4 );
+		add_action( 'product_import_complete', array( &$this, 'hawthorne_product_import_complete_callback' ) );
 		add_filter( 'woocommerce_email_classes', array( &$this, 'hawthorne_woocommerce_email_classes_callback' ) );
 	}
 
@@ -57,6 +58,21 @@ class Import_From_Hawthorne_Emails_Manager {
 	}
 
 	/**
+	 * Send notification to the greenlight admin user about the import log.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_product_import_complete_callback() {
+		new WC_Emails();
+		/**
+		 * This action fires when the import is complete.
+		 *
+		 * @since 1.0.0
+		 */
+		do_action( 'hawthorne_product_import_complete_callback_notification' );
+	}
+
+	/**
 	 * Add custom class to send reservation emails.
 	 *
 	 * @param array $email_classes Email classes array.
@@ -68,8 +84,14 @@ class Import_From_Hawthorne_Emails_Manager {
 		require_once 'class-shoot-cart-contents-to-greenlight-email.php'; // Require the class file.
 		$email_classes['Shoot_Cart_Contents_To_Greenlight_Email'] = new Shoot_Cart_Contents_To_Greenlight_Email(); // Put in the classes into existing classes.
 
+		// Shoot the email to the admin users about the import log.
+		require_once 'class-product-import-log-email.php'; // Require the class file.
+		$email_classes['Product_Import_Log_Email'] = new Product_Import_Log_Email(); // Put in the classes into existing classes.
+
 		return $email_classes;
 	}
+
+	
 }
 
 new Import_From_Hawthorne_Emails_Manager();

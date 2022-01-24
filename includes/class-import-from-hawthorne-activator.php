@@ -45,6 +45,14 @@ class Import_From_Hawthorne_Activator {
 			wp_schedule_event( time(), 'daily', 'hawthorne_import_products_cron' );
 		}
 
+		/**
+		 * Setup the cron to delete the log files generated while emailing the products import comparison log.
+		 * Setup the daily cron.
+		 */
+		if ( ! wp_next_scheduled( 'hawthorne_import_products_comparison_log_deletion_cron' ) ) {
+			wp_schedule_event( time(), 'daily', 'hawthorne_import_products_comparison_log_deletion_cron' );
+		}
+
 		// Redirect to plugin settings page on the plugin activation.
 		add_option( 'hawthorne_do_plugin_activation_redirect', 1 );
 	}

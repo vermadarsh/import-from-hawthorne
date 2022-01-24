@@ -32,5 +32,9 @@ class Import_From_Hawthorne_Deactivator {
 		if ( wp_next_scheduled( 'hawthorne_import_products_cron' ) ) {
 			wp_clear_scheduled_hook( 'hawthorne_import_products_cron' );
 		}
+
+		if ( wp_next_scheduled( 'hawthorne_import_products_comparison_log_deletion_cron' ) ) {
+			wp_clear_scheduled_hook( 'hawthorne_import_products_comparison_log_deletion_cron' );
+		}
 	}
 }

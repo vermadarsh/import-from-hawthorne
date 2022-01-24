@@ -153,6 +153,7 @@ class Import_From_Hawthorne {
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'hawthorne_add_meta_boxes_callback' );
 		$this->loader->add_filter( 'manage_greenlight_cart_posts_columns', $plugin_admin, 'hawthorne_manage_greenlight_cart_posts_columns_callback' );
 		$this->loader->add_action( 'manage_greenlight_cart_posts_custom_column', $plugin_admin, 'hawthorne_manage_greenlight_cart_posts_custom_column_callback', 10, 2 );
+		$this->loader->add_action( 'product_import_complete', $plugin_admin, 'hawthorne_product_import_complete_callback', 20 );
 	}
 
 	/**
@@ -178,6 +179,7 @@ class Import_From_Hawthorne {
 		$this->loader->add_filter( 'astra_woo_shop_product_structure', $plugin_public, 'hawthorne_astra_woo_shop_product_structure_callback' );
 		$this->loader->add_action( 'astra_woo_shop_rating_after', $plugin_public, 'hawthorne_astra_woo_shop_rating_after_callback' );
 		$this->loader->add_action( 'woocommerce_single_product_summary', $plugin_public, 'hawthorne_woocommerce_single_product_summary_callback', 20 );
+		$this->loader->add_action( 'hawthorne_import_products_comparison_log_deletion_cron', $plugin_public, 'hawthorne_hawthorne_import_products_comparison_log_deletion_cron_callback' );
 	}
 
 	/**

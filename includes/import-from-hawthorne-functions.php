@@ -106,7 +106,6 @@ if ( ! function_exists( 'hawthorne_fetch_products' ) ) {
 	 * @since 1.0.0
 	 */
 	function hawthorne_fetch_products() {
-		hawthorne_write_import_log( 'NOTICE: Starting to import products.' ); // Write the log.
 		$products_endpoint = hawthorne_get_plugin_settings( 'products_endpoint' );
 		$api_key           = hawthorne_get_plugin_settings( 'api_key' );
 		$api_secret_key    = hawthorne_get_plugin_settings( 'api_secret_key' );
@@ -150,9 +149,10 @@ if ( ! function_exists( 'hawthorne_write_import_log' ) ) {
 	 * @param string $message Holds the log message.
 	 * @return void
 	 */
-	function hawthorne_write_import_log( $message = '' ) {
+	function hawthorne_write_import_log( $message = '', $log_file, $include_date_time = false ) {
 		global $wp_filesystem;
 
+		// Return, if the message is empty.
 		if ( empty( $message ) ) {
 			return;
 		}
@@ -160,16 +160,18 @@ if ( ! function_exists( 'hawthorne_write_import_log' ) ) {
 		require_once ABSPATH . '/wp-admin/includes/file.php';
 		WP_Filesystem();
 
-		$local_file = HAWTHORNE_LOG_DIR_PATH . 'import-log.log'; // Log file path.
-
-		// Fetch the old content.
-		if ( $wp_filesystem->exists( $local_file ) ) {
-			$content  = $wp_filesystem->get_contents( $local_file );
-			$content .= "\n" . hawthorne_get_current_datetime( 'Y-m-d H:i:s' ) . ' :: ' . $message;
+		// Check if the file is created.
+		if ( ! $wp_filesystem->exists( $log_file ) ) {
+			$wp_filesystem->put_contents( $log_file, '', FS_CHMOD_FILE ); // Create the file.
 		}
 
+		// Fetch the old content.
+		$content  = $wp_filesystem->get_contents( $log_file );
+		$content .= ( $include_date_time ) ? "\n" . hawthorne_get_current_datetime( 'Y-m-d H:i:s' ) . ' :: ' . $message : "\n" . $message;
+
+		// Put the updated content.
 		$wp_filesystem->put_contents(
-			$local_file,
+			$log_file,
 			$content,
 			FS_CHMOD_FILE // predefined mode settings for WP files.
 		);

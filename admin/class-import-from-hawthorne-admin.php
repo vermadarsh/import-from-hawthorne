@@ -268,6 +268,36 @@ class Import_From_Hawthorne_Admin {
 		$old_products_updated   = (int) filter_input( INPUT_POST, 'old_products_updated', FILTER_SANITIZE_NUMBER_INT );
 		$products_import_failed = (int) filter_input( INPUT_POST, 'products_import_failed', FILTER_SANITIZE_NUMBER_INT );
 
+		// Start the import log if the request is for the first time.
+		if ( 1 === $page ) {
+			// Get the current product count.
+			$products_count = array_filter( (array) wp_count_posts( 'product' ) );
+			$count_log_arr  = array();
+
+			// Prepare a string from the array.
+			if ( ! empty( $products_count ) && is_array( $products_count ) ) {
+				// Iterate through the counts.
+				foreach ( $products_count as $status => $count ) {
+					$status = ucfirst( $status );
+					$count_log_arr[] = "{$status}: {$count}";
+				}
+			}
+
+			$message  = sprintf( __( 'Previous product count: %1$s', 'import-from-hawthorne' ), implode( ', ', $count_log_arr ) );
+			$filename = 'import-log-' . gmdate( 'Y-m-d' ) . '-' . md5( time() ) . '.log';
+			$log_file = HAWTHORNE_LOG_DIR_PATH . $filename;
+
+			// Set the filename in the cookie to use it during the email.
+			setcookie( 'hawthorne_import_log_filename', $filename, time() + (10 * 365 * 24 * 60 * 60), '/' );
+
+			// Write the log.
+			hawthorne_write_import_log( $message, $log_file );
+
+			// Set the filename that holds the updated/uploaded SKUs, in the cookie to use it during the email.
+			$sku_list_filename = 'import-log-sku-list-' . gmdate( 'Y-m-d' ) . '-' . md5( time() ) . '.log';
+			setcookie( 'hawthorne_import_log_sku_list_filename', $sku_list_filename, time() + (10 * 365 * 24 * 60 * 60), '/' );
+		}
+
 		// Fetch products.
 		$products       = get_transient( 'hawthorne_product_items' );
 		$products       = json_decode( $products, true );
@@ -278,7 +308,26 @@ class Import_From_Hawthorne_Admin {
 
 		// Return, if the chunk is empty, means all the products are imported.
 		if ( empty( $chunk ) || ! is_array( $chunk ) ) {
-			delete_transient( 'hawthorne_product_items' ); // Delete the transient now.
+			// Get the filename.
+			$filename = ( ! empty( $_COOKIE['hawthorne_import_log_filename'] ) ) ? $_COOKIE['hawthorne_import_log_filename'] : '';
+			$log_file = HAWTHORNE_LOG_DIR_PATH . $filename;
+
+			// Update the log for updated products.
+			$message  = sprintf( __( 'Updated products: %1$s', 'import-from-hawthorne' ), $old_products_updated );
+			hawthorne_write_import_log( $message, $log_file );
+
+			// Update the log for newly uploaded products.
+			$message  = sprintf( __( 'Uploaded products: %1$s', 'import-from-hawthorne' ), $new_products_added );
+			hawthorne_write_import_log( $message, $log_file );
+
+			/**
+			 * This hook fires on the admin portal.
+			 *
+			 * This actions fires when the import process from hawthorne is complete.
+			 *
+			 * @since 1.0.0
+			 */
+			do_action( 'product_import_complete' );
 
 			// Sent the final response.
 			$response = array(
@@ -309,9 +358,19 @@ class Import_From_Hawthorne_Admin {
 			if ( false === $product_exists ) {
 				$product_id = hawthorne_create_product( $product_title ); // Create product with title.
 				$new_products_added++; // Increase the counter of new product created.
+
+				// Add the import log.
+				$filename = ( ! empty( $_COOKIE['hawthorne_import_log_sku_list_filename'] ) ) ? $_COOKIE['hawthorne_import_log_sku_list_filename'] : '';
+				$message  = sprintf( __( 'Uploaded SKU: %1$s', 'import-from-hawthorne' ), $product_id_hawthorne );
+				hawthorne_write_import_log( $message, HAWTHORNE_LOG_DIR_PATH . $filename );
 			} else {
 				$product_id = $product_exists;
 				$old_products_updated++; // Increase the counter of old product updated.
+
+				// Add the import log.
+				$filename = ( ! empty( $_COOKIE['hawthorne_import_log_sku_list_filename'] ) ) ? $_COOKIE['hawthorne_import_log_sku_list_filename'] : '';
+				$message  = sprintf( __( 'Updated SKU: %1$s', 'import-from-hawthorne' ), $product_id_hawthorne );
+				hawthorne_write_import_log( $message, HAWTHORNE_LOG_DIR_PATH . $filename );
 			}
 
 			// Update product.
@@ -498,6 +557,15 @@ class Import_From_Hawthorne_Admin {
 		if ( ! empty( $chunk ) && is_array( $chunk ) ) {
 			self::hawthorne_import_products_chunk( $products, $chunk, $page );
 		}
+
+		/**
+		 * This hook fires on the admin portal.
+		 *
+		 * This actions fires when the import process from hawthorne is complete.
+		 *
+		 * @since 1.0.0
+		 */
+		do_action( 'product_import_complete' );
 	}
 
 	/**
@@ -724,5 +792,19 @@ class Import_From_Hawthorne_Admin {
 			</p>
 			<?php
 		}
+	}
+
+	/**
+	 * This callback is triggered when all the items from hawthorne are imported.
+	 *
+	 * @since 1.0.0
+	 */
+	public function hawthorne_product_import_complete_callback() {
+		// Delete the import transient.
+		delete_transient( 'hawthorne_product_items' );
+
+		// Nullify the cookies.
+		setcookie( 'hawthorne_import_log_filename', null, -1, '/' );
+		setcookie( 'hawthorne_import_log_sku_list_filename', null, -1, '/' );
 	}
 }
